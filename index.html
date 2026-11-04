@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>
+    // Su GitHub Pages il sito sta in una sottocartella (utente.github.io/repo/):
+    // la base serve a trovare file e pagine. Su book.rankwit.ai e sul Mac è la radice.
+    (function () {
+      var b = "/";
+      if (/\.github\.io$/.test(location.hostname)) { var s = location.pathname.split("/")[1]; if (s) b = "/" + s + "/"; }
+      window.RW_BASE = b.replace(/\/$/, "");
+      document.write('<base href="' + b + '">');
+    })();
+  </script>
+  <title>Prenota una call · RankWit AI</title>
+  <meta name="description" content="Scegli il tema o la persona e prenota una call con il team RankWit AI su Google Meet.">
+  <link rel="icon" href="assets/brand/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="assets/fonts/bukra-700.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/plus-jakarta-sans.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+  <div id="app"></div>
+  <noscript><p style="padding:24px">Per prenotare serve JavaScript. Puoi scriverci a info@rankwit.ai.</p></noscript>
+  <script src="config.js"></script>
+  <script src="orchestrator.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

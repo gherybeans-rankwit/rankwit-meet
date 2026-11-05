@@ -737,6 +737,9 @@
     // focus: dove rimettere il fuoco dopo aver ridisegnato ("day", "slot", "next", "mo:-1", "mo:1")
     function drawPick(focus) {
       st.step = "pick";
+      // Scorrimento della lista degli orari prima del ridisegno, da rimettere se il giorno è lo stesso.
+      const prevList = panel.querySelector(".slot-list");
+      const keepScroll = prevList && panel.querySelector(".day-name")?.dataset.day === st.day ? prevList.scrollTop : 0;
       const { map, failed } = st.data;
       if (!map.size) {
         panel.innerHTML = `${panelHead(T.chooseTime, 1)}<div class="empty"><p><strong>${spec.dates ? T.noneThoseDays : T.noneNext(C.rules.windowDays)}</strong></p>
@@ -775,7 +778,7 @@
             ${tzLine()}
           </div>
           <div class="times" id="times">
-            <p class="day-name">${st.day ? esc(cap(fmtDay(st.day, { weekday: "long", day: "numeric", month: "long" }))) : ""}</p>
+            <p class="day-name" data-day="${esc(st.day || "")}">${st.day ? esc(cap(fmtDay(st.day, { weekday: "long", day: "numeric", month: "long" }))) : ""}</p>
             <div class="slot-list" role="group" aria-label="${T.freeTimes}">
               ${times.map(([iso, freeIds]) => `
                 <div class="slot-row${iso === st.slot ? " sel" : ""}">
@@ -820,18 +823,37 @@
           drawSummary(); drawPick();
           focusAfter(`mo:${b.dataset.mo}`);
         }));
+      const goNext = () => {
+        history.pushState({ rw: "dati" }, "", `${location.pathname}${location.search}#dati`);
+        drawForm();
+      };
       panel.querySelectorAll(".slot").forEach((b) =>
         b.addEventListener("click", () => {
           st.slot = b.dataset.slot;
           const freeIds = b.dataset.free.split(",");
           st.host = spec.assign ? spec.assign(st.slot, freeIds) : pickHost(st.slot, freeIds, spec.topic);
-          drawSummary(); drawPick();
+          drawSummary();
+          // Si aggiorna solo la riga scelta: ridisegnare tutto il pannello riportava
+          // la lista degli orari in cima, e l'orario appena scelto spariva dalla vista.
+          panel.querySelectorAll(".slot-row").forEach((row) => {
+            row.classList.remove("sel");
+            row.querySelector(".slot").setAttribute("aria-pressed", "false");
+            row.querySelector("[data-next]")?.remove();
+          });
+          const row = b.closest(".slot-row");
+          row.classList.add("sel");
+          b.setAttribute("aria-pressed", "true");
+          row.insertAdjacentHTML("beforeend", `<button type="button" class="btn" data-next>${T.next}</button>`);
+          row.querySelector("[data-next]").addEventListener("click", goNext);
+          keepInView(row);
           focusAfter("next");
         }));
-      panel.querySelector("[data-next]")?.addEventListener("click", () => {
-        history.pushState({ rw: "dati" }, "", `${location.pathname}${location.search}#dati`);
-        drawForm();
-      });
+      panel.querySelector("[data-next]")?.addEventListener("click", goNext);
+      const listEl = panel.querySelector(".slot-list");
+      if (listEl) {
+        listEl.scrollTop = keepScroll;
+        keepInView(listEl.querySelector(".slot-row.sel"));
+      }
       const change = document.getElementById("tz-change");
       if (change) {
         change.addEventListener("click", () => {
@@ -850,6 +872,15 @@
         });
       }
       if (focus) focusAfter(focus);
+    }
+
+    // Tiene una riga dentro la parte visibile della lista degli orari, senza muovere la pagina.
+    function keepInView(row) {
+      const listEl = row?.closest(".slot-list");
+      if (!listEl || listEl.scrollHeight <= listEl.clientHeight) return;
+      const top = row.getBoundingClientRect().top - listEl.getBoundingClientRect().top + listEl.scrollTop;
+      if (top < listEl.scrollTop) listEl.scrollTop = top;
+      else if (top + row.offsetHeight > listEl.scrollTop + listEl.clientHeight) listEl.scrollTop = top + row.offsetHeight - listEl.clientHeight;
     }
 
     function focusAfter(what) {

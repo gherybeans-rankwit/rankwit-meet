@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>
+    // Su GitHub Pages il sito sta in una sottocartella (utente.github.io/repo/):
+    // la base serve a trovare file e pagine. Su book.rankwit.ai e sul Mac è la radice.
+    (function () {
+      var b = "/";
+      if (/\.github\.io$/.test(location.hostname)) { var s = location.pathname.split("/")[1]; if (s) b = "/" + s + "/"; }
+      window.RW_BASE = b.replace(/\/$/, "");
+      document.write('<base href="' + b + '">');
+    })();
+  </script>
+  <title>Prenota una call con Dario · RankWit Meet</title>
+  <meta name="description" content="Per gli aspetti tecnici della piattaforma. Prenota una call con Dario, CEO e co-founder di RankWit AI, su Google Meet.">
+  <!-- seo -->
+  <link rel="canonical" href="https://gherybeans-rankwit.github.io/rankwit-meet/dario">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="RankWit AI">
+  <meta property="og:locale" content="it_IT">
+  <meta property="og:title" content="Prenota una call con Dario · RankWit Meet">
+  <meta property="og:description" content="Per gli aspetti tecnici della piattaforma. Prenota una call con Dario, CEO e co-founder di RankWit AI, su Google Meet.">
+  <meta property="og:url" content="https://gherybeans-rankwit.github.io/rankwit-meet/dario">
+  <meta property="og:image" content="https://gherybeans-rankwit.github.io/rankwit-meet/assets/team/dario.webp">
+  <meta name="twitter:card" content="summary">
+  <!-- /seo -->
+  <link rel="icon" href="assets/brand/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="assets/fonts/bukra-700.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/plus-jakarta-sans.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+  <div id="app">
+    <main>
+      <section class="hero wrap">
+        <h1 class="title">Prenota una call con Dario</h1>
+        <p class="lead">Per gli aspetti tecnici della piattaforma. Ci sentiamo su Google Meet, nel giorno e all&#39;ora che preferisci.</p>
+        <p class="person-role">CEO e co-founder</p>
+      </section>
+      <nav class="wrap static-nav" aria-label="Tutte le call">
+        <ul>
+          <li><a href="https://gherybeans-rankwit.github.io/rankwit-meet/team">Call con il team</a></li>
+          <li><a href="https://gherybeans-rankwit.github.io/rankwit-meet/rankwit/audit-hotel">Audit AI del tuo hotel</a></li>
+          <li><a href="https://gherybeans-rankwit.github.io/rankwit-meet/rankwit/audit-destinazione">Audit AI della destinazione</a></li>
+          <li><a href="https://gherybeans-rankwit.github.io/rankwit-meet/rankwit/demo">Demo della piattaforma</a></li>
+          <li><a href="https://gherybeans-rankwit.github.io/rankwit-meet/rankwit/partnership">Partnership</a></li>
+          <li><a href="https://gherybeans-rankwit.github.io/rankwit-meet/rankwit/seo">SEO del sito</a></li>
+          <li><a href="https://gherybeans-rankwit.github.io/rankwit-meet/rankwit/pratiche">Questioni pratiche</a></li>
+          <li><a href="https://gherybeans-rankwit.github.io/rankwit-meet/lab/presentazione">Presentazione del Lab</a></li>
+          <li><a href="https://gherybeans-rankwit.github.io/rankwit-meet/dario">Call con Dario, CEO e co-founder</a></li>
+          <li><a href="https://gherybeans-rankwit.github.io/rankwit-meet/davide">Call con Davide, COO e co-founder</a></li>
+          <li><a href="https://gherybeans-rankwit.github.io/rankwit-meet/gherardo">Call con Gherardo, CMO</a></li>
+          <li><a href="https://gherybeans-rankwit.github.io/rankwit-meet/marco">Call con Marco, Head of Growth</a></li>
+          <li><a href="https://gherybeans-rankwit.github.io/rankwit-meet/marta">Call con Marta, Business Development</a></li>
+          <li><a href="https://gherybeans-rankwit.github.io/rankwit-meet/elvio">Call con Elvio, SEO Specialist</a></li>
+        </ul>
+      </nav>
+    </main>
+  </div>
+  <noscript><p style="padding:24px">Per prenotare serve JavaScript. Puoi scriverci a info@rankwit.ai.</p></noscript>
+  <script src="config.js"></script>
+  <script src="orchestrator.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://gherybeans-rankwit.github.io/rankwit-meet/sitemap.xml

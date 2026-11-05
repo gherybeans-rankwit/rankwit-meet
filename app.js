@@ -94,7 +94,62 @@
     right: I('<path d="m9 18 6-6-6-6"/>'),
     check: I('<path d="M20 6 9 17l-5-5"/>', 20),
     ok: I('<path d="M20 6 9 17l-5-5"/>'),
+    link: I('<path d="M10 14a4.5 4.5 0 0 0 6.4 0l3.2-3.2a4.5 4.5 0 0 0-6.4-6.4L12 5.6"/><path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3.2 3.2a4.5 4.5 0 0 0 6.4 6.4l1.2-1.2"/>', 16),
+    share: I('<path d="M12 15V3M7 8l5-5 5 5"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/>', 16),
+    cal: I('<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>', 16),
   };
+
+  /* ---------- copia e condividi ---------- */
+
+  async function copyText(text) {
+    try { await navigator.clipboard.writeText(text); return true; } catch (e) { /* sotto, il vecchio modo */ }
+    const t = Object.assign(document.createElement("textarea"), { value: text });
+    t.setAttribute("readonly", ""); t.style.cssText = "position:fixed;opacity:0";
+    document.body.append(t); t.select();
+    let ok = false;
+    try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
+    t.remove();
+    return ok;
+  }
+
+  // Cambia per un attimo la scritta del bottone e lo dice anche ai lettori di schermo.
+  function flash(btn, text) {
+    const label = btn.querySelector("span");
+    const was = btn.dataset.label || (btn.dataset.label = label.textContent);
+    label.textContent = text;
+    btn.classList.add("is-done");
+    const live = document.getElementById("live");
+    if (live) live.textContent = text;
+    clearTimeout(btn._t);
+    btn._t = setTimeout(() => { label.textContent = was; btn.classList.remove("is-done"); }, 2400);
+  }
+
+  // Il telefono apre WhatsApp, email e le altre app; altrimenti si copia.
+  async function shareOrCopy(btn, data, copied) {
+    if (navigator.share) {
+      try { await navigator.share(data); return; } catch (e) { if (e.name === "AbortError") return; }
+    }
+    const text = [data.text, data.url].filter(Boolean).join("\n");
+    flash(btn, (await copyText(text)) ? copied : "Non riesco a copiare");
+  }
+
+  const pageUrl = () => `${location.origin}${location.pathname}`;
+
+  // File .ics della call, da aprire in qualunque calendario.
+  function icsFile({ start, minutes, title, details, url }) {
+    const f = (d) => d.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+    const s = new Date(start);
+    const e = new Date(s.getTime() + minutes * 60e3);
+    const x = (t) => String(t).replace(/[\\;,]/g, (c) => `\\${c}`).replace(/\n/g, "\\n");
+    const body = [
+      "BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//RankWit AI//RankWit Meet//IT", "METHOD:PUBLISH",
+      "BEGIN:VEVENT", `UID:${f(s)}-${Math.random().toString(36).slice(2)}@rankwit.ai`, `DTSTAMP:${f(new Date())}`,
+      `DTSTART:${f(s)}`, `DTEND:${f(e)}`, `SUMMARY:${x(title)}`, `DESCRIPTION:${x(details)}`,
+      `LOCATION:${x(url || "Google Meet")}`, ...(url ? [`URL:${url}`] : []),
+      "END:VEVENT", "END:VCALENDAR", "",
+    ].join("\r\n");
+    return new File([body], "call-rankwit.ics", { type: "text/calendar" });
+  }
 
   /* ---------- catalogo ---------- */
 
@@ -237,6 +292,7 @@
         </div>
       </header>
       <main>${main}</main>
+      <p class="sr-only" id="live" aria-live="polite"></p>
       <footer class="site-foot">
         <div class="wrap foot-in">
           <span class="foot-brand"><img src="assets/brand/rankwit-ai-black.svg" alt="${esc(C.site.organisation)}" width="104" height="16"></span>
@@ -521,7 +577,21 @@
           <li>${ICON.ok}<span>${cap(free(spec.inPerson))}</span></li>
         </ul>
         ${hosts}
-        ${w ? `<div class="chosen"><strong>${esc(w.dayYear)}</strong><span>${esc(w.range)} · ${esc(w.zone)}</span></div>` : ""}`;
+        ${w ? `<div class="chosen"><strong>${esc(w.dayYear)}</strong><span>${esc(w.range)} · ${esc(w.zone)}</span></div>` : ""}
+        ${st.step === "done" ? "" : `
+        <div class="share">
+          <button type="button" class="share-btn" data-copy>${ICON.link}<span>Copia link</span></button>
+          ${navigator.share ? `<button type="button" class="share-btn" data-share>${ICON.share}<span>Condividi</span></button>` : ""}
+        </div>`}`;
+      const shareText = spec.personal
+        ? `Prenota una call con ${person(spec.people[0]).name} di ${C.site.organisation}`
+        : `${spec.name}, ${C.site.organisation}`;
+      summary.querySelector("[data-copy]")?.addEventListener("click", async (ev) => {
+        const btn = ev.currentTarget;
+        flash(btn, (await copyText(pageUrl())) ? "Link copiato" : "Non riesco a copiare");
+      });
+      summary.querySelector("[data-share]")?.addEventListener("click", (ev) =>
+        shareOrCopy(ev.currentTarget, { title: document.title, text: shareText, url: pageUrl() }, "Link copiato"));
       summary.querySelectorAll(".dur").forEach((b) =>
         b.addEventListener("click", () => { st.duration = Number(b.dataset.d); st.slot = null; st.host = null; drawSummary(); load(b.dataset.d); }));
     }
@@ -824,8 +894,37 @@
           ${spec.prepare ? `<p>${esc(spec.prepare)}</p>` : ""}
           <p class="quiet">Dall'email di conferma puoi spostare o cancellare la call.</p>
           ${res.demo ? `<p class="demo-note">È una prova. ${spec.personal ? esc(host.name) : "Chi farà la call"} non ha ancora collegato cal.com, quindi nessuna prenotazione è stata creata.</p>` : ""}
+          ${spec.inPerson ? "" : `
+          <div class="done-share">
+            <p class="done-share-text">Vuoi che venga anche un collega? Mandagli giorno, ora e link della call.</p>
+            <div class="done-share-btns">
+              <button type="button" class="btn" data-share-done>${ICON.share}<span>Condividi con un collega</span></button>
+              <button type="button" class="btn ghost" data-ics>${ICON.cal}<span>Scarica per il calendario</span></button>
+            </div>
+          </div>`}
           <a class="btn ghost" href="${href("/")}" data-link>Torna a tutte le call</a>
         </div>`;
+      if (!spec.inPerson) {
+        // Il link Meet arriva da cal.com nella risposta, se Google l'ha già creato.
+        const meet = [res.meetingUrl, res.location].find((u) => /^https:\/\/meet\.google\.com\//.test(u || "")) || "";
+        const title = spec.personal ? `Call con ${host.name} di ${C.site.organisation}` : `${spec.name}, ${C.site.organisation}`;
+        const lines = [title, `${w.day}, ${w.range}, ${w.zone}`, meet ? `Google Meet ${meet}` : "Il link Google Meet è nell'invito di cal.com, che puoi inoltrare."];
+        const ics = () => icsFile({ start: st.slot, minutes: st.duration, title, details: lines.slice(1).join("\n"), url: meet });
+        panel.querySelector("[data-share-done]").addEventListener("click", async (ev) => {
+          const btn = ev.currentTarget;
+          const file = ics();
+          const data = { title, text: lines.join("\n") };
+          if (navigator.canShare?.({ files: [file] })) {
+            try { await navigator.share({ ...data, files: [file] }); return; } catch (e) { if (e.name === "AbortError") return; }
+          }
+          shareOrCopy(btn, data, "Dettagli copiati");
+        });
+        panel.querySelector("[data-ics]").addEventListener("click", () => {
+          const a = Object.assign(document.createElement("a"), { href: URL.createObjectURL(ics()), download: "call-rankwit.ics" });
+          document.body.append(a); a.click(); a.remove();
+          setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+        });
+      }
       panel.querySelector(".h2").focus({ preventScroll: true });
       if (narrow()) panel.scrollIntoView({ block: "start", behavior: reduceMotion() ? "auto" : "smooth" });
     }

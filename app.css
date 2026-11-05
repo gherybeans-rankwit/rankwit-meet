@@ -481,3 +481,28 @@ img { display: block; }
 
 /* I programmi si dividono lo spazio, quanti che siano */
 .prog-grid { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+
+/* Elenco delle pagine scritto in HTML per i motori di ricerca: si vede solo
+   per un attimo prima che app.js costruisca la pagina, o senza JavaScript. */
+.static-nav ul { list-style: none; margin: 0 0 48px; padding: 0; display: flex; flex-wrap: wrap; gap: 10px 22px; }
+.static-nav a { color: var(--accent-text, #5350d6); }
+
+/* Copia link e condividi, nel riquadro della call */
+.share { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--hair); }
+.share-btn { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 8px 14px; border: 1px solid var(--line-ctl); border-radius: 999px; background: var(--surface); color: var(--ink); font: 600 14px/1.2 var(--font-body); cursor: pointer; transition: border-color .2s, background-color .2s, color .2s; }
+.share-btn svg { color: var(--accent-text); flex: none; }
+.share-btn.is-done { background: var(--accent-soft); border-color: var(--accent); color: var(--accent-text); }
+@media (hover: hover) { .share-btn:hover { border-color: var(--ink-muted); } }
+
+/* Dopo la conferma */
+.done-share { display: grid; gap: 12px; margin-top: 12px; padding: 18px 20px; border-radius: var(--radius-ctl); background: var(--accent-soft); width: 100%; }
+.done-share-text { color: var(--ink) !important; font-weight: 500; }
+.done-share-btns { display: flex; flex-wrap: wrap; gap: 10px; }
+.done .done-share .btn { margin-top: 0; }
+.done-share .btn.is-done { background: var(--accent-text); }
+
+@media (max-width: 900px) {
+  .share { margin-top: 12px; padding-top: 12px; }
+  .share-btn { min-height: 44px; }
+  .done-share-btns .btn { flex: 1 1 100%; }
+}

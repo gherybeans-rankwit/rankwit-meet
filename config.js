@@ -10,6 +10,9 @@
 window.RW_BOOK = {
   site: {
     name: "RankWit Meet",
+    // Indirizzo pubblico del sito, per i link nei motori di ricerca e la sitemap.
+    // Quando c'è book.rankwit.ai va scritto qui e si rifà build-pages.mjs.
+    url: "https://gherybeans-rankwit.github.io/rankwit-meet",
     organisation: "RankWit AI",
     website: "https://www.rankwit.ai",
     privacyUrl: "https://www.rankwit.ai/legal/privacy-policy-webapp",
@@ -39,7 +42,7 @@ window.RW_BOOK = {
       name: "Davide", role: "COO e co-founder", weight: 2,
       bio: "Per il primo contatto, le demo e i primi passi.",
       photo: "assets/team/davide.webp", portrait: "",
-      cal: "", events: {}, // link cal.com ancora da avere: per ora orari di esempio
+      cal: "davide-filiaggi", events: { 15: "15min", 30: "30min" },
     },
     gherardo: {
       name: "Gherardo", role: "CMO", weight: 1,

@@ -17,6 +17,7 @@ window.RW_BOOK = {
     website: "https://www.rankwit.ai",
     privacyUrl: "https://www.rankwit.ai/legal/privacy-policy-webapp",
     newsletterLabel: "Voglio ricevere la newsletter di RankWit",
+    newsletterLabel_en: "Send me the RankWit newsletter",
     contact: "info@rankwit.ai",
   },
 
@@ -35,36 +36,42 @@ window.RW_BOOK = {
     dario: {
       name: "Dario", role: "CEO e co-founder", weight: 1,
       bio: "Per gli aspetti tecnici della piattaforma.",
+      role_en: "CEO and co-founder", bio_en: "For the technical side of the platform.",
       photo: "assets/team/dario.webp", portrait: "",
       cal: "dario-valastro", events: { 15: "15min", 30: "30min", 45: "45-min-meeting", 60: "60-min-meeting" },
     },
     davide: {
       name: "Davide", role: "COO e co-founder", weight: 2,
       bio: "Per il primo contatto, le demo e i primi passi.",
+      role_en: "COO and co-founder", bio_en: "For a first contact, demos and the first steps.",
       photo: "assets/team/davide.webp", portrait: "",
       cal: "davide-filiaggi", events: { 15: "15min", 30: "30min" },
     },
     gherardo: {
       name: "Gherardo", role: "CMO", weight: 1,
       bio: "Per marketing e partnership.",
+      role_en: "CMO", bio_en: "For marketing and partnerships.",
       photo: "assets/team/gherardo.webp", portrait: "",
       cal: "gherardo-fagioli-xox0se", events: { 30: "30min" },
     },
     marco: {
       name: "Marco", role: "Head of Growth", weight: 1,
       bio: "Per sales e scalabilità.",
+      role_en: "Head of Growth", bio_en: "For sales and scaling.",
       photo: "assets/team/marco.webp", portrait: "",
       cal: "marco-amodio-rzvm9e", events: { 15: "15min", 30: "30min" },
     },
     marta: {
       name: "Marta", role: "Business Development", weight: 1,
       bio: "Per demo e presentazioni della piattaforma.",
+      role_en: "Business Development", bio_en: "For demos and presentations of the platform.",
       photo: "assets/team/marta.webp", portrait: "",
       cal: "marta-bausani-8awkz2", events: { 15: "15min", 30: "30min" },
     },
     elvio: {
       name: "Elvio", role: "SEO Specialist", weight: 1,
       bio: "Per la SEO e il sito.",
+      role_en: "SEO Specialist", bio_en: "For SEO and the website.",
       photo: "assets/team/elvio-viso.webp", portrait: "assets/team/elvio.webp",
       cal: "elvio-leonardi-avr1vq", events: { 15: "15min", 30: "30min" },
     },
@@ -85,11 +92,18 @@ window.RW_BOOK = {
     duration: 30,
     summary: "Non sai a chi scrivere? Prenota mezz'ora con il team. Ti risponde chi è di turno e, se serve, ti passa la persona giusta.",
     prompt: "Di cosa vuoi parlare?",
+    eyebrow_en: "Call with the team",
+    title_en: "Call with the team",
+    book_en: "Book a call with the team",
+    summary_en: "Not sure who to write to? Book half an hour with the team. Whoever is on duty answers and, if needed, passes you to the right person.",
+    prompt_en: "What would you like to talk about?",
     people: ["dario", "davide", "gherardo", "marco", "marta"],
     turn: "call",
     start: "2026-11-02", // da qui parte il conto dei turni (un lunedì)
     keywords: ["generica", "informazioni", "contatto", "team", "chiunque", "prezzo", "prezzi", "costo", "costi", "preventivo", "offerta", "listino", "abbonamento"],
+    keywords_en: ["general", "information", "contact", "team", "anyone", "price", "prices", "cost", "costs", "quote", "offer", "pricing", "subscription"],
     prepare: "Se hai un sito, tienilo a portata di mano e lo guardiamo insieme.",
+    prepare_en: "If you have a website, keep it at hand and we will look at it together.",
   },
 
   // Durate offerte nelle pagine personali (book.rankwit.ai/davide).
@@ -104,12 +118,21 @@ window.RW_BOOK = {
       name: "RankWit AI",
       short: "RankWit",
       meta: "Audit · Piattaforma · SEO · Collaborazioni",
+      meta_en: "Audit · Platform · SEO · Partnerships",
       intro: "Audit, demo e collaborazioni con il team di RankWit AI, per hotel e destinazioni.",
+      intro_en: "Audits, demos and partnerships with the RankWit AI team, for hotels and destinations.",
       tile: "rankwit",
       card: "dark",
       types: [
         {
           key: "audit-hotel",
+          prepare_en: "Keep your hotel's website at hand, so we can look at it together.",
+          eyebrow_en: "AI audit · Hotels",
+          title_en: "AI audit of your hotel",
+          book_en: "Book the AI audit of your hotel",
+          summary_en: "We look together at what ChatGPT, Gemini and Perplexity answer when a traveler looks for a hotel like yours, and where to start.",
+          prompt_en: "Which hotel is it? Write the name and the website.",
+          keywords_en: ["hotel", "property", "report", "visibility", "chatgpt", "gemini", "perplexity", "b&b", "bed and breakfast", "farm stay", "camping", "resort", "villa", "apartments", "holiday home", "accommodation"],
           prepare: "Tieni a portata di mano il sito dell'hotel, così lo guardiamo insieme.",
           eyebrow: "Audit AI · Hotel",
           title: "Audit AI del tuo hotel",
@@ -122,6 +145,13 @@ window.RW_BOOK = {
         },
         {
           key: "audit-destinazione",
+          prepare_en: "Keep the destination's website at hand, so we can look at it together.",
+          eyebrow_en: "AI audit · Destinations",
+          title_en: "AI audit of your destination",
+          book_en: "Book the AI audit of your destination",
+          summary_en: "For DMOs, municipalities and consortia. We see how AI tells the story of your territory, which sources it uses and where information is missing.",
+          prompt_en: "Which destination do you work on, and for which organisation?",
+          keywords_en: ["dmo", "municipality", "consortium", "territory", "tourism", "region", "destination"],
           prepare: "Tieni a portata di mano il sito della destinazione, così lo guardiamo insieme.",
           eyebrow: "Audit AI · Destinazioni",
           title: "Audit AI della destinazione",
@@ -134,6 +164,13 @@ window.RW_BOOK = {
         },
         {
           key: "demo",
+          prepare_en: "Think of two or three questions a traveler would ask about you and we will try them together.",
+          eyebrow_en: "Platform",
+          title_en: "Platform demo",
+          book_en: "Book a demo of the platform",
+          summary_en: "We show you how we measure the AI engines' answers about hotels and destinations every week, and what you find in the dashboard.",
+          prompt_en: "What would you like to see in the demo?",
+          keywords_en: ["trial", "dashboard", "software", "platform"],
           prepare: "Pensa a due o tre domande che un viaggiatore farebbe su di te e le proviamo insieme.",
           eyebrow: "Piattaforma",
           title: "Demo della piattaforma",
@@ -146,6 +183,13 @@ window.RW_BOOK = {
         },
         {
           key: "partnership",
+          prepare_en: "If you have a presentation of your agency or product, attach it when you reply to the invitation.",
+          eyebrow_en: "Partnerships",
+          title_en: "Partnership",
+          book_en: "Book a call about partnerships",
+          summary_en: "For agencies, consultants and hospitality software companies that want to work with us.",
+          prompt_en: "What kind of partnership do you have in mind?",
+          keywords_en: ["agency", "consultant", "reseller", "integration", "partner"],
           prepare: "Se hai una presentazione dell'agenzia o del prodotto, allegala rispondendo all'invito.",
           eyebrow: "Collaborazioni",
           title: "Partnership",
@@ -158,6 +202,13 @@ window.RW_BOOK = {
         },
         {
           key: "seo",
+          prepare_en: "Keep the website at hand and, if you have it, access to Google Search Console.",
+          eyebrow_en: "SEO",
+          title_en: "SEO of your website",
+          book_en: "Book a call about SEO",
+          summary_en: "We look together at how Google and AI assistants read your website, what is missing and what to fix first.",
+          prompt_en: "Which website is it? Tell us what you would like to improve.",
+          keywords_en: ["seo", "website", "google", "ranking", "structured data", "schema", "pages"],
           prepare: "Tieni a portata di mano il sito e, se ce l'hai, l'accesso a Google Search Console.",
           eyebrow: "SEO",
           title: "SEO del sito",
@@ -170,6 +221,13 @@ window.RW_BOOK = {
         },
         {
           key: "pratiche",
+          prepare_en: "If it is about an invoice or a contract, keep the number at hand.",
+          eyebrow_en: "Practical matters",
+          title_en: "Practical matters",
+          book_en: "Book a call about practical matters",
+          summary_en: "Invoices, contracts, access to the platform and everything organisational.",
+          prompt_en: "What is it about?",
+          keywords_en: ["invoice", "payment", "contract", "access", "password", "admin", "billing"],
           prepare: "Se si tratta di una fattura o di un contratto, tieni a portata di mano il numero.",
           eyebrow: "Questioni pratiche",
           title: "Questioni pratiche",
@@ -187,12 +245,21 @@ window.RW_BOOK = {
       name: "AI Visibility Lab",
       short: "Lab",
       meta: "Per territori e associazioni",
+      meta_en: "For territories and associations",
       intro: "Il percorso per le strutture di un territorio, fatto di incontri, esercizi e misure su come l'AI le racconta.",
+      intro_en: "The programme for the properties of a territory: meetings, exercises and measurements of how AI tells their story.",
       tile: "lab",
       card: "soft",
       types: [
         {
           key: "presentazione",
+          prepare_en: "If you already have the territory and the number of properties in mind, bring them to the call.",
+          eyebrow_en: "Presentation · AI Visibility Lab",
+          title_en: "Presentation of the Lab",
+          book_en: "Book a presentation of the Lab",
+          summary_en: "How a Lab is organised for the properties of a territory, who takes part and what each one keeps.",
+          prompt_en: "Which territory or association are you thinking of the Lab for?",
+          keywords_en: ["lab", "workshop", "training", "properties", "territory"],
           prepare: "Se hai già in mente il territorio e quante strutture coinvolgere, portalo in call.",
           eyebrow: "Presentazione · AI Visibility Lab",
           title: "Presentazione del Lab",
@@ -210,10 +277,27 @@ window.RW_BOOK = {
   // Le sezioni della home e i filtri. Nella vista «Tutte le call» ogni call
   // compare una volta sola, nella prima sezione che la contiene.
   navigator: [
-    { key: "hotel", label: "Hotel", options: [["rankwit", "audit-hotel"], ["rankwit", "demo"]] },
-    { key: "destinazioni", label: "Destinazioni", options: [["rankwit", "audit-destinazione"], ["lab", "presentazione"], ["rankwit", "demo"]] },
-    { key: "seo", label: "SEO e sito", options: [["rankwit", "seo"]] },
-    { key: "collaborazioni", label: "Collaborazioni", options: [["rankwit", "partnership"]] },
-    { key: "pratiche", label: "Questioni pratiche", options: [["rankwit", "pratiche"]] },
+    { key: "hotel", label: "Hotel", label_en: "Hotels", options: [["rankwit", "audit-hotel"], ["rankwit", "demo"]] },
+    { key: "destinazioni", label: "Destinazioni", label_en: "Destinations", options: [["rankwit", "audit-destinazione"], ["lab", "presentazione"], ["rankwit", "demo"]] },
+    { key: "seo", label: "SEO e sito", label_en: "SEO and website", options: [["rankwit", "seo"]] },
+    { key: "collaborazioni", label: "Collaborazioni", label_en: "Partnerships", options: [["rankwit", "partnership"]] },
+    { key: "pratiche", label: "Questioni pratiche", label_en: "Practical matters", options: [["rankwit", "pratiche"]] },
   ],
+};
+
+// Inglese: ogni testo può avere un gemello con il suffisso `_en` (title_en,
+// bio_en, keywords_en...). RW_LOCALIZE(config, "en") restituisce una copia con
+// i testi inglesi al posto di quelli italiani; con "it" una copia senza i `_en`.
+// Lo usano app.js (dall'indirizzo /en/...) e build-pages.mjs.
+window.RW_LOCALIZE = function (obj, lang) {
+  if (Array.isArray(obj)) return obj.map(function (v) { return window.RW_LOCALIZE(v, lang); });
+  if (!obj || typeof obj !== "object") return obj;
+  var out = {};
+  Object.keys(obj).forEach(function (k) {
+    if (k.slice(-3) === "_en") return;
+    var v = obj[k];
+    if (lang === "en" && Object.prototype.hasOwnProperty.call(obj, k + "_en")) v = obj[k + "_en"];
+    out[k] = window.RW_LOCALIZE(v, lang);
+  });
+  return out;
 };

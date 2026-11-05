@@ -1,19 +1,195 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://gherybeans-rankwit.github.io/rankwit-meet/</loc><lastmod>2026-11-05</lastmod></url>
-  <url><loc>https://gherybeans-rankwit.github.io/rankwit-meet/team</loc><lastmod>2026-11-05</lastmod></url>
-  <url><loc>https://gherybeans-rankwit.github.io/rankwit-meet/rankwit</loc><lastmod>2026-11-05</lastmod></url>
-  <url><loc>https://gherybeans-rankwit.github.io/rankwit-meet/rankwit/audit-hotel</loc><lastmod>2026-11-05</lastmod></url>
-  <url><loc>https://gherybeans-rankwit.github.io/rankwit-meet/rankwit/audit-destinazione</loc><lastmod>2026-11-05</lastmod></url>
-  <url><loc>https://gherybeans-rankwit.github.io/rankwit-meet/rankwit/demo</loc><lastmod>2026-11-05</lastmod></url>
-  <url><loc>https://gherybeans-rankwit.github.io/rankwit-meet/rankwit/partnership</loc><lastmod>2026-11-05</lastmod></url>
-  <url><loc>https://gherybeans-rankwit.github.io/rankwit-meet/rankwit/seo</loc><lastmod>2026-11-05</lastmod></url>
-  <url><loc>https://gherybeans-rankwit.github.io/rankwit-meet/rankwit/pratiche</loc><lastmod>2026-11-05</lastmod></url>
-  <url><loc>https://gherybeans-rankwit.github.io/rankwit-meet/lab/presentazione</loc><lastmod>2026-11-05</lastmod></url>
-  <url><loc>https://gherybeans-rankwit.github.io/rankwit-meet/dario</loc><lastmod>2026-11-05</lastmod></url>
-  <url><loc>https://gherybeans-rankwit.github.io/rankwit-meet/davide</loc><lastmod>2026-11-05</lastmod></url>
-  <url><loc>https://gherybeans-rankwit.github.io/rankwit-meet/gherardo</loc><lastmod>2026-11-05</lastmod></url>
-  <url><loc>https://gherybeans-rankwit.github.io/rankwit-meet/marco</loc><lastmod>2026-11-05</lastmod></url>
-  <url><loc>https://gherybeans-rankwit.github.io/rankwit-meet/marta</loc><lastmod>2026-11-05</lastmod></url>
-  <url><loc>https://gherybeans-rankwit.github.io/rankwit-meet/elvio</loc><lastmod>2026-11-05</lastmod></url>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://gherybeans-rankwit.github.io/rankwit-meet/</loc>
+    <lastmod>2026-11-05</lastmod>
+    <xhtml:link rel="alternate" hreflang="it" href="https://gherybeans-rankwit.github.io/rankwit-meet/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gherybeans-rankwit.github.io/rankwit-meet/en/"/>
+  </url>
+  <url>
+    <loc>https://gherybeans-rankwit.github.io/rankwit-meet/team</loc>
+    <lastmod>2026-11-05</lastmod>
+    <xhtml:link rel="alternate" hreflang="it" href="https://gherybeans-rankwit.github.io/rankwit-meet/team"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gherybeans-rankwit.github.io/rankwit-meet/en/team"/>
+  </url>
+  <url>
+    <loc>https://gherybeans-rankwit.github.io/rankwit-meet/rankwit</loc>
+    <lastmod>2026-11-05</lastmod>
+    <xhtml:link rel="alternate" hreflang="it" href="https://gherybeans-rankwit.github.io/rankwit-meet/rankwit"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gherybeans-rankwit.github.io/rankwit-meet/en/rankwit"/>
+  </url>
+  <url>
+    <loc>https://gherybeans-rankwit.github.io/rankwit-meet/rankwit/audit-hotel</loc>
+    <lastmod>2026-11-05</lastmod>
+    <xhtml:link rel="alternate" hreflang="it" href="https://gherybeans-rankwit.github.io/rankwit-meet/rankwit/audit-hotel"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gherybeans-rankwit.github.io/rankwit-meet/en/rankwit/audit-hotel"/>
+  </url>
+  <url>
+    <loc>https://gherybeans-rankwit.github.io/rankwit-meet/rankwit/audit-destinazione</loc>
+    <lastmod>2026-11-05</lastmod>
+    <xhtml:link rel="alternate" hreflang="it" href="https://gherybeans-rankwit.github.io/rankwit-meet/rankwit/audit-destinazione"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gherybeans-rankwit.github.io/rankwit-meet/en/rankwit/audit-destinazione"/>
+  </url>
+  <url>
+    <loc>https://gherybeans-rankwit.github.io/rankwit-meet/rankwit/demo</loc>
+    <lastmod>2026-11-05</lastmod>
+    <xhtml:link rel="alternate" hreflang="it" href="https://gherybeans-rankwit.github.io/rankwit-meet/rankwit/demo"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gherybeans-rankwit.github.io/rankwit-meet/en/rankwit/demo"/>
+  </url>
+  <url>
+    <loc>https://gherybeans-rankwit.github.io/rankwit-meet/rankwit/partnership</loc>
+    <lastmod>2026-11-05</lastmod>
+    <xhtml:link rel="alternate" hreflang="it" href="https://gherybeans-rankwit.github.io/rankwit-meet/rankwit/partnership"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gherybeans-rankwit.github.io/rankwit-meet/en/rankwit/partnership"/>
+  </url>
+  <url>
+    <loc>https://gherybeans-rankwit.github.io/rankwit-meet/rankwit/seo</loc>
+    <lastmod>2026-11-05</lastmod>
+    <xhtml:link rel="alternate" hreflang="it" href="https://gherybeans-rankwit.github.io/rankwit-meet/rankwit/seo"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gherybeans-rankwit.github.io/rankwit-meet/en/rankwit/seo"/>
+  </url>
+  <url>
+    <loc>https://gherybeans-rankwit.github.io/rankwit-meet/rankwit/pratiche</loc>
+    <lastmod>2026-11-05</lastmod>
+    <xhtml:link rel="alternate" hreflang="it" href="https://gherybeans-rankwit.github.io/rankwit-meet/rankwit/pratiche"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gherybeans-rankwit.github.io/rankwit-meet/en/rankwit/pratiche"/>
+  </url>
+  <url>
+    <loc>https://gherybeans-rankwit.github.io/rankwit-meet/lab/presentazione</loc>
+    <lastmod>2026-11-05</lastmod>
+    <xhtml:link rel="alternate" hreflang="it" href="https://gherybeans-rankwit.github.io/rankwit-meet/lab/presentazione"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gherybeans-rankwit.github.io/rankwit-meet/en/lab/presentazione"/>
+  </url>
+  <url>
+    <loc>https://gherybeans-rankwit.github.io/rankwit-meet/dario</loc>
+    <lastmod>2026-11-05</lastmod>
+    <xhtml:link rel="alternate" hreflang="it" href="https://gherybeans-rankwit.github.io/rankwit-meet/dario"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gherybeans-rankwit.github.io/rankwit-meet/en/dario"/>
+  </url>
+  <url>
+    <loc>https://gherybeans-rankwit.github.io/rankwit-meet/davide</loc>
+    <lastmod>2026-11-05</lastmod>
+    <xhtml:link rel="alternate" hreflang="it" href="https://gherybeans-rankwit.github.io/rankwit-meet/davide"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gherybeans-rankwit.github.io/rankwit-meet/en/davide"/>
+  </url>
+  <url>
+    <loc>https://gherybeans-rankwit.github.io/rankwit-meet/gherardo</loc>
+    <lastmod>2026-11-05</lastmod>
+    <xhtml:link rel="alternate" hreflang="it" href="https://gherybeans-rankwit.github.io/rankwit-meet/gherardo"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gherybeans-rankwit.github.io/rankwit-meet/en/gherardo"/>
+  </url>
+  <url>
+    <loc>https://gherybeans-rankwit.github.io/rankwit-meet/marco</loc>
+    <lastmod>2026-11-05</lastmod>
+    <xhtml:link rel="alternate" hreflang="it" href="https://gherybeans-rankwit.github.io/rankwit-meet/marco"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gherybeans-rankwit.github.io/rankwit-meet/en/marco"/>
+  </url>
+  <url>
+    <loc>https://gherybeans-rankwit.github.io/rankwit-meet/marta</loc>
+    <lastmod>2026-11-05</lastmod>
+    <xhtml:link rel="alternate" hreflang="it" href="https://gherybeans-rankwit.github.io/rankwit-meet/marta"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gherybeans-rankwit.github.io/rankwit-meet/en/marta"/>
+  </url>
+  <url>
+    <loc>https://gherybeans-rankwit.github.io/rankwit-meet/elvio</loc>
+    <lastmod>2026-11-05</lastmod>
+    <xhtml:link rel="alternate" hreflang="it" href="https://gherybeans-rankwit.github.io/rankwit-meet/elvio"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gherybeans-rankwit.github.io/rankwit-meet/en/elvio"/>
+  </url>
+  <url>
+    <loc>https://gherybeans-rankwit.github.io/rankwit-meet/en/</loc>
+    <lastmod>2026-11-05</lastmod>
+    <xhtml:link rel="alternate" hreflang="it" href="https://gherybeans-rankwit.github.io/rankwit-meet/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gherybeans-rankwit.github.io/rankwit-meet/en/"/>
+  </url>
+  <url>
+    <loc>https://gherybeans-rankwit.github.io/rankwit-meet/en/team</loc>
+    <lastmod>2026-11-05</lastmod>
+    <xhtml:link rel="alternate" hreflang="it" href="https://gherybeans-rankwit.github.io/rankwit-meet/team"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gherybeans-rankwit.github.io/rankwit-meet/en/team"/>
+  </url>
+  <url>
+    <loc>https://gherybeans-rankwit.github.io/rankwit-meet/en/rankwit</loc>
+    <lastmod>2026-11-05</lastmod>
+    <xhtml:link rel="alternate" hreflang="it" href="https://gherybeans-rankwit.github.io/rankwit-meet/rankwit"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gherybeans-rankwit.github.io/rankwit-meet/en/rankwit"/>
+  </url>
+  <url>
+    <loc>https://gherybeans-rankwit.github.io/rankwit-meet/en/rankwit/audit-hotel</loc>
+    <lastmod>2026-11-05</lastmod>
+    <xhtml:link rel="alternate" hreflang="it" href="https://gherybeans-rankwit.github.io/rankwit-meet/rankwit/audit-hotel"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gherybeans-rankwit.github.io/rankwit-meet/en/rankwit/audit-hotel"/>
+  </url>
+  <url>
+    <loc>https://gherybeans-rankwit.github.io/rankwit-meet/en/rankwit/audit-destinazione</loc>
+    <lastmod>2026-11-05</lastmod>
+    <xhtml:link rel="alternate" hreflang="it" href="https://gherybeans-rankwit.github.io/rankwit-meet/rankwit/audit-destinazione"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gherybeans-rankwit.github.io/rankwit-meet/en/rankwit/audit-destinazione"/>
+  </url>
+  <url>
+    <loc>https://gherybeans-rankwit.github.io/rankwit-meet/en/rankwit/demo</loc>
+    <lastmod>2026-11-05</lastmod>
+    <xhtml:link rel="alternate" hreflang="it" href="https://gherybeans-rankwit.github.io/rankwit-meet/rankwit/demo"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gherybeans-rankwit.github.io/rankwit-meet/en/rankwit/demo"/>
+  </url>
+  <url>
+    <loc>https://gherybeans-rankwit.github.io/rankwit-meet/en/rankwit/partnership</loc>
+    <lastmod>2026-11-05</lastmod>
+    <xhtml:link rel="alternate" hreflang="it" href="https://gherybeans-rankwit.github.io/rankwit-meet/rankwit/partnership"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gherybeans-rankwit.github.io/rankwit-meet/en/rankwit/partnership"/>
+  </url>
+  <url>
+    <loc>https://gherybeans-rankwit.github.io/rankwit-meet/en/rankwit/seo</loc>
+    <lastmod>2026-11-05</lastmod>
+    <xhtml:link rel="alternate" hreflang="it" href="https://gherybeans-rankwit.github.io/rankwit-meet/rankwit/seo"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gherybeans-rankwit.github.io/rankwit-meet/en/rankwit/seo"/>
+  </url>
+  <url>
+    <loc>https://gherybeans-rankwit.github.io/rankwit-meet/en/rankwit/pratiche</loc>
+    <lastmod>2026-11-05</lastmod>
+    <xhtml:link rel="alternate" hreflang="it" href="https://gherybeans-rankwit.github.io/rankwit-meet/rankwit/pratiche"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gherybeans-rankwit.github.io/rankwit-meet/en/rankwit/pratiche"/>
+  </url>
+  <url>
+    <loc>https://gherybeans-rankwit.github.io/rankwit-meet/en/lab/presentazione</loc>
+    <lastmod>2026-11-05</lastmod>
+    <xhtml:link rel="alternate" hreflang="it" href="https://gherybeans-rankwit.github.io/rankwit-meet/lab/presentazione"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gherybeans-rankwit.github.io/rankwit-meet/en/lab/presentazione"/>
+  </url>
+  <url>
+    <loc>https://gherybeans-rankwit.github.io/rankwit-meet/en/dario</loc>
+    <lastmod>2026-11-05</lastmod>
+    <xhtml:link rel="alternate" hreflang="it" href="https://gherybeans-rankwit.github.io/rankwit-meet/dario"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gherybeans-rankwit.github.io/rankwit-meet/en/dario"/>
+  </url>
+  <url>
+    <loc>https://gherybeans-rankwit.github.io/rankwit-meet/en/davide</loc>
+    <lastmod>2026-11-05</lastmod>
+    <xhtml:link rel="alternate" hreflang="it" href="https://gherybeans-rankwit.github.io/rankwit-meet/davide"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gherybeans-rankwit.github.io/rankwit-meet/en/davide"/>
+  </url>
+  <url>
+    <loc>https://gherybeans-rankwit.github.io/rankwit-meet/en/gherardo</loc>
+    <lastmod>2026-11-05</lastmod>
+    <xhtml:link rel="alternate" hreflang="it" href="https://gherybeans-rankwit.github.io/rankwit-meet/gherardo"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gherybeans-rankwit.github.io/rankwit-meet/en/gherardo"/>
+  </url>
+  <url>
+    <loc>https://gherybeans-rankwit.github.io/rankwit-meet/en/marco</loc>
+    <lastmod>2026-11-05</lastmod>
+    <xhtml:link rel="alternate" hreflang="it" href="https://gherybeans-rankwit.github.io/rankwit-meet/marco"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gherybeans-rankwit.github.io/rankwit-meet/en/marco"/>
+  </url>
+  <url>
+    <loc>https://gherybeans-rankwit.github.io/rankwit-meet/en/marta</loc>
+    <lastmod>2026-11-05</lastmod>
+    <xhtml:link rel="alternate" hreflang="it" href="https://gherybeans-rankwit.github.io/rankwit-meet/marta"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gherybeans-rankwit.github.io/rankwit-meet/en/marta"/>
+  </url>
+  <url>
+    <loc>https://gherybeans-rankwit.github.io/rankwit-meet/en/elvio</loc>
+    <lastmod>2026-11-05</lastmod>
+    <xhtml:link rel="alternate" hreflang="it" href="https://gherybeans-rankwit.github.io/rankwit-meet/elvio"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gherybeans-rankwit.github.io/rankwit-meet/en/elvio"/>
+  </url>
 </urlset>

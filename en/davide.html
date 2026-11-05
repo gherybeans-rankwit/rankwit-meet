@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>
+    // Su GitHub Pages il sito sta in una sottocartella (utente.github.io/repo/):
+    // la base serve a trovare file e pagine. Su book.rankwit.ai e sul Mac è la radice.
+    (function () {
+      var b = "/";
+      if (/\.github\.io$/.test(location.hostname)) { var s = location.pathname.split("/")[1]; if (s) b = "/" + s + "/"; }
+      window.RW_BASE = b.replace(/\/$/, "");
+      document.write('<base href="' + b + '">');
+    })();
+  </script>
+  <title>Book a call with Davide · RankWit Meet</title>
+  <meta name="description" content="For a first contact, demos and the first steps. Book a call with Davide, COO and co-founder at RankWit AI, on Google Meet.">
+  <!-- seo -->
+  <link rel="canonical" href="https://gherybeans-rankwit.github.io/rankwit-meet/en/davide">
+  <link rel="alternate" hreflang="it" href="https://gherybeans-rankwit.github.io/rankwit-meet/davide">
+  <link rel="alternate" hreflang="en" href="https://gherybeans-rankwit.github.io/rankwit-meet/en/davide">
+  <link rel="alternate" hreflang="x-default" href="https://gherybeans-rankwit.github.io/rankwit-meet/davide">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="RankWit AI">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:locale:alternate" content="it_IT">
+  <meta property="og:title" content="Book a call with Davide · RankWit Meet">
+  <meta property="og:description" content="For a first contact, demos and the first steps. Book a call with Davide, COO and co-founder at RankWit AI, on Google Meet.">
+  <meta property="og:url" content="https://gherybeans-rankwit.github.io/rankwit-meet/en/davide">
+  <meta property="og:image" content="https://gherybeans-rankwit.github.io/rankwit-meet/assets/team/davide.webp">
+  <meta name="twitter:card" content="summary">
+  <!-- /seo -->
+  <link rel="icon" href="assets/brand/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="assets/fonts/bukra-700.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/plus-jakarta-sans.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+  <div id="app">
+    <main>
+      <section class="hero wrap">
+        <h1 class="title">Book a call with Davide</h1>
+        <p class="lead">For a first contact, demos and the first steps. We meet on Google Meet, on the day and at the time you prefer.</p>
+        <p class="person-role">COO and co-founder</p>
+      </section>
+      <nav class="wrap static-nav" aria-label="All calls">
+        <ul>
+          <li><a href="https://gherybeans-rankwit.github.io/rankwit-meet/en/team">Call with the team</a></li>
+          <li><a href="https://gherybeans-rankwit.github.io/rankwit-meet/en/rankwit/audit-hotel">AI audit of your hotel</a></li>
+          <li><a href="https://gherybeans-rankwit.github.io/rankwit-meet/en/rankwit/audit-destinazione">AI audit of your destination</a></li>
+          <li><a href="https://gherybeans-rankwit.github.io/rankwit-meet/en/rankwit/demo">Platform demo</a></li>
+          <li><a href="https://gherybeans-rankwit.github.io/rankwit-meet/en/rankwit/partnership">Partnership</a></li>
+          <li><a href="https://gherybeans-rankwit.github.io/rankwit-meet/en/rankwit/seo">SEO of your website</a></li>
+          <li><a href="https://gherybeans-rankwit.github.io/rankwit-meet/en/rankwit/pratiche">Practical matters</a></li>
+          <li><a href="https://gherybeans-rankwit.github.io/rankwit-meet/en/lab/presentazione">Presentation of the Lab</a></li>
+          <li><a href="https://gherybeans-rankwit.github.io/rankwit-meet/en/dario">Call with Dario, CEO and co-founder</a></li>
+          <li><a href="https://gherybeans-rankwit.github.io/rankwit-meet/en/davide">Call with Davide, COO and co-founder</a></li>
+          <li><a href="https://gherybeans-rankwit.github.io/rankwit-meet/en/gherardo">Call with Gherardo, CMO</a></li>
+          <li><a href="https://gherybeans-rankwit.github.io/rankwit-meet/en/marco">Call with Marco, Head of Growth</a></li>
+          <li><a href="https://gherybeans-rankwit.github.io/rankwit-meet/en/marta">Call with Marta, Business Development</a></li>
+          <li><a href="https://gherybeans-rankwit.github.io/rankwit-meet/en/elvio">Call with Elvio, SEO Specialist</a></li>
+        </ul>
+      </nav>
+    </main>
+  </div>
+  <noscript><p style="padding:24px">JavaScript is needed to book. You can write to us at info@rankwit.ai.</p></noscript>
+  <script src="config.js"></script>
+  <script src="orchestrator.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -6,10 +6,102 @@
 (() => {
   "use strict";
 
-  const C = window.RW_BOOK;
+  const BASE = window.RW_BASE || ""; // "" sul Mac e su book.rankwit.ai, "/repo" su GitHub Pages
+  const routePath = () => (BASE && location.pathname.startsWith(BASE) ? location.pathname.slice(BASE.length) : location.pathname);
+  // La lingua la dice l'indirizzo: /en/... è la versione inglese, tutto il resto è in italiano.
+  const LANG = /^\/en(\/|$)/i.test(routePath()) ? "en" : "it";
+  const EN = LANG === "en";
+  const LOCALE = EN ? "en-GB" : "it-IT";
+  document.documentElement.lang = LANG;
+  const C = window.RW_LOCALIZE(window.RW_BOOK, LANG);
   const app = document.getElementById("app");
   const API = "https://api.cal.com/v2";
   const source = new URLSearchParams(location.search).get("da") || "";
+  let current = "/"; // l'indirizzo della pagina senza base e senza /en, per il cambio lingua
+
+  /* ---------- testi dell'interfaccia ---------- */
+
+  const T = EN ? {
+    tzItaly: "Italian time", tzCET: "Central European time", tzCity: (c) => `${c} time`, tzFair: "local time at the fair",
+    or: "or", and: "and",
+    copyFail: "Could not copy", copied: "Link copied", detailsCopied: "Details copied",
+    bookACall: "Book a call", allCallsAria: "RankWit Meet, all calls", switchAria: "Versione italiana",
+    free: "free, no commitment", minutes: "minutes", example: "Example", callWith: "Call with", bookWith: "Book a call with", callTypes: "call types",
+    chooseTime: "Choose a time", chooseTimeLower: "choose a time",
+    homeTitle: "Book a call · RankWit AI", homeH1: "What would you like to talk about?",
+    homeLead: "Not sure who to write to? Book half an hour with the team. Whoever is on duty answers and, if needed, passes you to the right person. Every call is on Google Meet, at the times of your time zone.",
+    bookTeam: "Book a call with the team", facesAria: "The team, pick who to talk to", facesNote: "Or pick who you want to talk to.",
+    search: "Search a topic or a person", filterAria: "Filter the calls", allCalls: "All calls", teamH2: "Book a call with whoever you prefer", progsH2: "All programmes in one place",
+    results: (n, q) => `${n} results for "${q}"`, noResults: (q) => `No results for "${q}"`, calls: "Calls", people: "People",
+    noCall: (q) => `No call for "${q}".`, tryAgain: "Try another word, or book the call with the team. Whoever is on duty answers and points you to the right person.",
+    inPerson: "in person", inPersonCap: "In person", meetLink: "Google Meet, the link comes with the invitation", duration: "Duration",
+    range: (a, b) => `${a} to ${b}`, copyLink: "Copy link", share: "Share", bookWithOf: (n, o) => `Book a call with ${n} of ${o}`,
+    stepOf: (n) => `Step ${n} of 2`, loading: "Loading free times",
+    timesIn: "Times in", auto: "Set automatically", byYou: "Chosen by you", change: "Change", timeZone: "Time zone",
+    noneThoseDays: "There are no free times left on those days.", noneNext: (n) => `No free times in the next ${n} days.`,
+    writeUs: (c) => `Write to us at <a href="mailto:${c}">${c}</a> and we will find a time.`,
+    prevMonth: "Previous month", nextMonth: "Next month", gridAria: "Days with free times. Use the arrow keys to move.",
+    dow: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"], today: ", today", freeTimes: "Free times", next: "Next",
+    cantRead: (who) => `I cannot read the times of ${who}, so they are not shown for now.`,
+    changeTime: "Change time", yourDetails: "Your details", fullName: "Full name", email: "Email", org: "Hotel, organisation or company", role: "Role", optional: "(optional)", website: "Website",
+    confirm: "Confirm the booking", confirming: "Confirming the booking",
+    fine: (u) => `We use these details to set up this call, under <a href="${u}" target="_blank" rel="noopener">RankWit's privacy policy</a>.`,
+    vName: "Enter your full name.", vEmail: "Enter your email.", vEmailBad: "This email is incomplete. It should look like name@hotel.com.",
+    vOrg: "Enter the name of your hotel, organisation or company.", vNotes: "Tell us in a line or two what you would like to talk about.",
+    taken: "This time is no longer free. Choose another one, your details are kept.", failed: (c) => `We could not confirm the booking. Try again in a moment or write to us at ${c}.`,
+    confirmed: "Booking confirmed", seeYouStand: "See you at the stand", talkSoon: "Talk soon",
+    inviteVenue: (e) => `The invitation with the venue is on its way to <strong>${e}</strong>.`,
+    inviteWith: (n, e) => `The call is with ${n}. The invitation with the Google Meet link is on its way to <strong>${e}</strong>.`,
+    invite: (e) => `The invitation with the Google Meet link is on its way to <strong>${e}</strong>.`,
+    moveCancel: "From the confirmation email you can reschedule or cancel the call.",
+    demoNote: (who) => `This is a test. ${who} has not connected cal.com yet, so no booking was created.`, theHost: "The host",
+    shareColleague: "Want a colleague to join? Send them the day, time and link of the call.", shareBtn: "Share with a colleague", icsBtn: "Add to calendar", backAll: "Back to all calls",
+    callWithOf: (n, o) => `Call with ${n} of ${o}`, meetInInvite: "The Google Meet link is in the cal.com invitation, which you can forward.",
+    personTitle: (n) => `Book a call with ${n} · RankWit Meet`, personPrompt: "What would you like to talk about?",
+    personPrepare: "If you like, reply to the invitation with the website or the material to look at together.",
+    personLead: "We meet on Google Meet, on the day and at the time you prefer.",
+    nfTitle: "Page not found · RankWit Meet", nfH1: "This link is not valid", nfLead: "The link may be incomplete. From here you can choose a topic or a person.", nfBtn: "See all calls",
+  } : {
+    tzItaly: "ora italiana", tzCET: "ora dell'Europa centrale", tzCity: (c) => `ora di ${c}`, tzFair: "ora locale della fiera",
+    or: "o", and: "e",
+    copyFail: "Non riesco a copiare", copied: "Link copiato", detailsCopied: "Dettagli copiati",
+    bookACall: "Prenota una call", allCallsAria: "RankWit Meet, tutte le call", switchAria: "English version",
+    free: null, minutes: "minuti", example: "Esempio", callWith: "Call con", bookWith: "Prenota una call con", callTypes: "tipi di call",
+    chooseTime: "Scegli un orario", chooseTimeLower: "scegli un orario",
+    homeTitle: "Prenota una call · RankWit AI", homeH1: "Di cosa vuoi parlare?",
+    homeLead: "Non sai a chi scrivere? Prenota mezz'ora con il team. Ti risponde chi è di turno e, se serve, ti passa la persona giusta. Ogni call si fa su Google Meet, negli orari del tuo fuso.",
+    bookTeam: "Prenota una call con il team", facesAria: "Il team, scegli tu con chi parlare", facesNote: "Oppure scegli tu con chi parlare.",
+    search: "Cerca un tema o una persona", filterAria: "Filtra le call", allCalls: "Tutte le call", teamH2: "Prenota una call con chi preferisci", progsH2: "Tutti i programmi in un posto",
+    results: (n, q) => `${n} risultati per «${q}»`, noResults: (q) => `Nessun risultato per «${q}»`, calls: "Call", people: "Persone",
+    noCall: (q) => `Nessuna call per «${q}».`, tryAgain: "Prova con un'altra parola, oppure prenota la call con il team. Ti risponde chi è di turno e ti indirizza.",
+    inPerson: "di persona", inPersonCap: "Di persona", meetLink: "Google Meet, il link arriva con l'invito", duration: "Durata",
+    range: (a, b) => `dalle ${a} alle ${b}`, copyLink: "Copia link", share: "Condividi", bookWithOf: (n, o) => `Prenota una call con ${n} di ${o}`,
+    stepOf: (n) => `Passo ${n} di 2`, loading: "Carico gli orari liberi",
+    timesIn: "Orari nell'", auto: "Impostato in automatico", byYou: "Scelto da te", change: "Cambia", timeZone: "Fuso orario",
+    noneThoseDays: "In quei giorni non ci sono più orari liberi.", noneNext: (n) => `Nei prossimi ${n} giorni non ci sono orari liberi.`,
+    writeUs: (c) => `Scrivici a <a href="mailto:${c}">${c}</a> e troviamo un momento.`,
+    prevMonth: "Mese precedente", nextMonth: "Mese successivo", gridAria: "Giorni con orari liberi. Usa le frecce per spostarti.",
+    dow: ["lun", "mar", "mer", "gio", "ven", "sab", "dom"], today: ", oggi", freeTimes: "Orari liberi", next: "Avanti",
+    cantRead: (who) => `Non riesco a leggere gli orari di ${who}, per ora non li vedi.`,
+    changeTime: "Cambia orario", yourDetails: "I tuoi dati", fullName: "Nome e cognome", email: "Email", org: "Hotel, ente o azienda", role: "Ruolo", optional: "(facoltativo)", website: "Sito",
+    confirm: "Conferma la prenotazione", confirming: "Confermo la prenotazione",
+    fine: (u) => `I dati servono a organizzare questa call e sono trattati secondo la <a href="${u}" target="_blank" rel="noopener">privacy di RankWit</a>.`,
+    vName: "Scrivi nome e cognome.", vEmail: "Scrivi la tua email.", vEmailBad: "Questa email non è completa, deve essere come nome@hotel.it.",
+    vOrg: "Scrivi il nome dell'hotel, dell'ente o dell'azienda.", vNotes: "Scrivi in una o due righe di cosa vuoi parlare.",
+    taken: "Questo orario non è più libero. Scegline un altro, i tuoi dati restano salvati.", failed: (c) => `Non sono riuscito a confermare la prenotazione. Riprova tra poco o scrivici a ${c}.`,
+    confirmed: "Prenotazione confermata", seeYouStand: "Ci vediamo allo stand", talkSoon: "Ci sentiamo presto",
+    inviteVenue: (e) => `L'invito con il luogo è in arrivo a <strong>${e}</strong>.`,
+    inviteWith: (n, e) => `La call è con ${n}. L'invito con il link Google Meet è in arrivo a <strong>${e}</strong>.`,
+    invite: (e) => `L'invito con il link Google Meet è in arrivo a <strong>${e}</strong>.`,
+    moveCancel: "Dall'email di conferma puoi spostare o cancellare la call.",
+    demoNote: (who) => `È una prova. ${who} non ha ancora collegato cal.com, quindi nessuna prenotazione è stata creata.`, theHost: "Chi farà la call",
+    shareColleague: "Vuoi che venga anche un collega? Mandagli giorno, ora e link della call.", shareBtn: "Condividi con un collega", icsBtn: "Scarica per il calendario", backAll: "Torna a tutte le call",
+    callWithOf: (n, o) => `Call con ${n} di ${o}`, meetInInvite: "Il link Google Meet è nell'invito di cal.com, che puoi inoltrare.",
+    personTitle: (n) => `Prenota una call con ${n} · RankWit Meet`, personPrompt: "Di cosa vuoi parlare?",
+    personPrepare: "Se vuoi, rispondi all'invito con il sito o i materiali da guardare insieme.",
+    personLead: "Ci sentiamo su Google Meet, nel giorno e all'ora che preferisci.",
+    nfTitle: "Pagina non trovata · RankWit Meet", nfH1: "Questo link non è valido", nfLead: "Il link potrebbe essere incompleto. Da qui puoi scegliere il tema o la persona.", nfBtn: "Vedi tutte le call",
+  };
 
   /* ---------- utilità ---------- */
 
@@ -40,7 +132,7 @@
     Luxembourg: "Lussemburgo", Warsaw: "Varsavia", Prague: "Praga", Copenhagen: "Copenaghen", Stockholm: "Stoccolma",
     New_York: "New York", Los_Angeles: "Los Angeles", Dubai: "Dubai", Tokyo: "Tokyo", UTC: "UTC",
   };
-  const tzCity = (z) => CITY[z.split("/").pop()] || z.split("/").pop().replace(/_/g, " ");
+  const tzCity = (z) => (EN ? "" : CITY[z.split("/").pop()]) || z.split("/").pop().replace(/_/g, " ");
   const tzOffset = (z, d = new Date()) => {
     try {
       const p = new Intl.DateTimeFormat("en-US", { timeZone: z, timeZoneName: "shortOffset" }).formatToParts(d);
@@ -51,22 +143,22 @@
   // Nome del fuso per chi legge: «ora italiana», «ora dell'Europa centrale»
   // per chi ha lo stesso orario di Roma, altrimenti «ora di <città>».
   const tzLabel = (z, d = new Date()) => {
-    if (z === "Europe/Rome") return "ora italiana";
-    if (z.startsWith("Europe/") && tzOffset(z, d) === tzOffset("Europe/Rome", d)) return "ora dell'Europa centrale";
-    return `ora di ${tzCity(z)}`;
+    if (z === "Europe/Rome") return T.tzItaly;
+    if (z.startsWith("Europe/") && tzOffset(z, d) === tzOffset("Europe/Rome", d)) return T.tzCET;
+    return T.tzCity(tzCity(z));
   };
 
   const dayKey = (d, z) =>
     new Intl.DateTimeFormat("en-CA", { timeZone: z, year: "numeric", month: "2-digit", day: "2-digit" }).format(d);
-  const fmtTime = (d, z) => new Intl.DateTimeFormat("it-IT", { timeZone: z, hour: "2-digit", minute: "2-digit" }).format(d);
+  const fmtTime = (d, z) => new Intl.DateTimeFormat(LOCALE, { timeZone: z, hour: "2-digit", minute: "2-digit" }).format(d);
   const keyDate = (key) => { const [y, m, d] = key.split("-").map(Number); return new Date(Date.UTC(y, m - 1, d, 12)); };
-  const fmtDay = (key, opts) => new Intl.DateTimeFormat("it-IT", { timeZone: "UTC", ...opts }).format(keyDate(key));
-  const fmtMonth = (y, m) => cap(new Intl.DateTimeFormat("it-IT", { timeZone: "UTC", month: "long", year: "numeric" }).format(new Date(Date.UTC(y, m, 1, 12))));
+  const fmtDay = (key, opts) => new Intl.DateTimeFormat(LOCALE, { timeZone: "UTC", ...opts }).format(keyDate(key));
+  const fmtMonth = (y, m) => cap(new Intl.DateTimeFormat(LOCALE, { timeZone: "UTC", month: "long", year: "numeric" }).format(new Date(Date.UTC(y, m, 1, 12))));
   const ymd = (d) => d.toISOString().slice(0, 10);
 
   const person = (id) => C.people[id];
   const isDemo = (id) => !person(id)?.cal;
-  const list = (ids, last = "o") => {
+  const list = (ids, last = T.or) => {
     const n = ids.map((id) => person(id)?.name).filter(Boolean);
     return n.length <= 1 ? n.join("") : `${n.slice(0, -1).join(", ")} ${last} ${n[n.length - 1]}`;
   };
@@ -130,7 +222,7 @@
       try { await navigator.share(data); return; } catch (e) { if (e.name === "AbortError") return; }
     }
     const text = [data.text, data.url].filter(Boolean).join("\n");
-    flash(btn, (await copyText(text)) ? copied : "Non riesco a copiare");
+    flash(btn, (await copyText(text)) ? copied : T.copyFail);
   }
 
   const pageUrl = () => `${location.origin}${location.pathname}`;
@@ -156,8 +248,9 @@
   const brand = (k) => C.brands.find((b) => b.key === k);
   const typeOf = (bk, tk) => brand(bk)?.types.find((t) => t.key === tk);
   const allTypes = C.brands.flatMap((b) => b.types.map((t) => ({ b, t })));
-  const BASE = window.RW_BASE || ""; // "" sul Mac e su book.rankwit.ai, "/repo" su GitHub Pages
-  const href = (path) => `${BASE}${path}${source ? `?da=${encodeURIComponent(source)}` : ""}`;
+  const href = (path) => `${BASE}${EN ? "/en" : ""}${path}${source ? `?da=${encodeURIComponent(source)}` : ""}`;
+  // La stessa pagina nell'altra lingua (link vero, non data-link: la lingua si legge al caricamento).
+  const switchHref = () => `${BASE}${EN ? "" : "/en"}${current}${source ? `?da=${encodeURIComponent(source)}` : ""}`;
   // Solo sul Mac le persone senza cal.com hanno orari di esempio: online restano senza orari.
   const LOCAL = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
 
@@ -261,7 +354,7 @@
         start: iso,
         eventTypeSlug: slug,
         username: person(host).cal,
-        attendee: { name, email, timeZone: tz, language: "it" },
+        attendee: { name, email, timeZone: tz, language: LANG },
         bookingFieldsResponses: { notes },
         metadata,
       }),
@@ -281,14 +374,17 @@
   const narrow = () => window.matchMedia("(max-width: 900px)").matches;
   let booker = null; // la prenotazione aperta, per gestire Indietro e Avanti del browser
 
-  function shell(main, right = "Prenota una call") {
+  function shell(main, right = T.bookACall) {
     app.innerHTML = `
       <header class="site-head">
         <div class="wrap head-in">
-          <a class="logo" href="${href("/")}" data-link aria-label="RankWit Meet, tutte le call">
+          <a class="logo" href="${href("/")}" data-link aria-label="${T.allCallsAria}">
             <img src="assets/brand/rankwit-ai-white.svg" alt="RankWit AI" width="150" height="23">
           </a>
-          <span class="head-meta">${esc(right)}</span>
+          <span class="head-right">
+            <span class="head-meta">${esc(right)}</span>
+            <a class="lang-switch" href="${switchHref()}" hreflang="${EN ? "it" : "en"}" lang="${EN ? "it" : "en"}" aria-label="${T.switchAria}">${EN ? "IT" : "EN"}</a>
+          </span>
         </div>
       </header>
       <main>${main}</main>
@@ -302,13 +398,13 @@
     window.scrollTo(0, 0);
   }
 
-  const free = (inPerson) => (inPerson ? "gratuito e senza impegno" : "gratuita e senza impegno");
+  const free = (inPerson) => T.free || (inPerson ? "gratuito e senza impegno" : "gratuita e senza impegno");
 
   const callCard = ({ b, t }) => `
-    <a class="call" href="${href(`/${b.key}/${t.key}`)}" data-link aria-label="${esc(t.title)}, ${t.duration} minuti">
+    <a class="call" href="${href(`/${b.key}/${t.key}`)}" data-link aria-label="${esc(t.title)}, ${t.duration} ${T.minutes}">
       ${tile(b)}
       <span class="call-body">
-        <span class="call-title">${esc(t.title)}${b.example ? ' <span class="tag">Esempio</span>' : ""}</span>
+        <span class="call-title">${esc(t.title)}${b.example ? ` <span class="tag">${T.example}</span>` : ""}</span>
         <span class="call-sum">${esc(t.summary)}</span>
         <span class="call-dur m-only">${t.duration} min</span>
       </span>
@@ -316,7 +412,7 @@
     </a>`;
 
   const genericCall = () => `
-    <a class="call" href="${href(`/${C.generic.key}`)}" data-link aria-label="${esc(C.generic.title)}, ${C.generic.duration} minuti">
+    <a class="call" href="${href(`/${C.generic.key}`)}" data-link aria-label="${esc(C.generic.title)}, ${C.generic.duration} ${T.minutes}">
       <span class="tile tile-dark"><img src="assets/brand/rankwit-mark-white.svg" alt=""></span>
       <span class="call-body">
         <span class="call-title">${esc(C.generic.title)}</span>
@@ -331,10 +427,10 @@
   const personRow = (id) => {
     const p = person(id);
     return `
-    <a class="call" href="${href(`/${id}`)}" data-link aria-label="Call con ${esc(p.name)}, ${esc(p.role)}">
+    <a class="call" href="${href(`/${id}`)}" data-link aria-label="${T.callWith} ${esc(p.name)}, ${esc(p.role)}">
       ${avatar(id, "tile-av")}
       <span class="call-body">
-        <span class="call-title">Call con ${esc(p.name)}</span>
+        <span class="call-title">${T.callWith} ${esc(p.name)}</span>
         <span class="call-role">${esc(p.role)}</span>
         <span class="call-sum">${esc(p.bio)}</span>
       </span>
@@ -348,20 +444,20 @@
       ? `<img class="team-img" src="${esc(p.portrait || p.photo)}" alt="" loading="lazy">`
       : `<span class="team-img ini" aria-hidden="true">${esc(initials(p.name))}</span>`;
     return `
-    <a class="team-card" href="${href(`/${id}`)}" data-link aria-label="Prenota una call con ${esc(p.name)}, ${esc(p.role)}">
+    <a class="team-card" href="${href(`/${id}`)}" data-link aria-label="${T.bookWith} ${esc(p.name)}, ${esc(p.role)}">
       ${img}
       <span class="team-body">
         <span class="team-name">${esc(p.name)}</span>
         <span class="team-role">${esc(p.role)}</span>
         <span class="team-bio">${esc(p.bio)}</span>
-        <span class="link">Prenota una call ${ICON.arrow}</span>
+        <span class="link">${T.bookACall} ${ICON.arrow}</span>
       </span>
     </a>`;
   };
 
   const progCard = (b) => {
     const n = b.types.length;
-    const foot = n > 1 ? `${n} tipi di call` : `${esc(b.types[0].title)} · ${b.types[0].duration} min`;
+    const foot = n > 1 ? `${n} ${T.callTypes}` : `${esc(b.types[0].title)} · ${b.types[0].duration} min`;
     const head = b.tile === "rankwit"
       ? `<img class="prog-logo" src="assets/brand/rankwit-ai-white.svg" alt="${esc(b.name)}">`
       : `<span class="prog-name">${tile(b)}${esc(b.name)}</span>`;
@@ -380,13 +476,13 @@
   const O = window.RW_ORCHESTRATOR;
 
   const genericCard = () => `
-    <a class="feature" href="${href(`/${G.key}`)}" data-link aria-label="${esc(G.title)}, scegli un orario">
+    <a class="feature" href="${href(`/${G.key}`)}" data-link aria-label="${esc(G.title)}, ${T.chooseTimeLower}">
       <span class="feature-body">
         <span class="feature-title">${esc(G.title)}</span>
         <span class="feature-sum">${esc(G.summary)}</span>
-        <span class="feature-facts">${G.duration} minuti · Google Meet · ${free(false)}</span>
+        <span class="feature-facts">${G.duration} ${T.minutes} · Google Meet · ${free(false)}</span>
       </span>
-      <span class="btn light">Scegli un orario ${ICON.arrow}</span>
+      <span class="btn light">${T.chooseTime} ${ICON.arrow}</span>
     </a>`;
 
   function renderGeneric() {
@@ -410,48 +506,48 @@
   };
 
   function renderHome() {
-    document.title = "Prenota una call · RankWit AI";
+    document.title = T.homeTitle;
     const ids = Object.keys(C.people);
     shell(`
       <section class="hero-band">
         <div class="wrap hero-grid">
           <div class="hero-copy">
-            <h1 class="title display">Di cosa vuoi parlare?</h1>
-            <p class="lead">Non sai a chi scrivere? Prenota mezz'ora con il team. Ti risponde chi è di turno e, se serve, ti passa la persona giusta. Ogni call si fa su Google Meet, negli orari del tuo fuso.</p>
+            <h1 class="title display">${T.homeH1}</h1>
+            <p class="lead">${T.homeLead}</p>
             <div class="hero-action">
-              <a class="btn big" href="${href(`/${G.key}`)}" data-link>Prenota una call con il team ${ICON.arrow}</a>
-              <p class="hero-facts">${ICON.ok}<span>${G.duration} minuti, ${free(false)}</span></p>
+              <a class="btn big" href="${href(`/${G.key}`)}" data-link>${T.bookTeam} ${ICON.arrow}</a>
+              <p class="hero-facts">${ICON.ok}<span>${G.duration} ${T.minutes}, ${free(false)}</span></p>
             </div>
           </div>
           <div class="faces-wrap">
-            <ul class="faces" aria-label="Il team, scegli tu con chi parlare">
+            <ul class="faces" aria-label="${T.facesAria}">
               ${ids.map((id) => {
                 const p = person(id);
                 const img = p.photo
                   ? `<img src="${esc(p.photo)}" alt="" width="160" height="160" decoding="async">`
                   : `<span class="face-ini" aria-hidden="true">${esc(initials(p.name))}</span>`;
-                return `<li><a class="face" href="${href(`/${id}`)}" data-link aria-label="Prenota una call con ${esc(p.name)}, ${esc(p.role)}">${img}<span class="face-name">${esc(p.name)}</span></a></li>`;
+                return `<li><a class="face" href="${href(`/${id}`)}" data-link aria-label="${T.bookWith} ${esc(p.name)}, ${esc(p.role)}">${img}<span class="face-name">${esc(p.name)}</span></a></li>`;
               }).join("")}
             </ul>
-            <p class="faces-note">Oppure scegli tu con chi parlare.</p>
+            <p class="faces-note">${T.facesNote}</p>
           </div>
         </div>
       </section>
       <section class="wrap finder">
-        <label class="search">${ICON.search}<input id="q" type="search" placeholder="Cerca un tema o una persona" autocomplete="off" value="${esc(homeState.q)}" aria-label="Cerca un tema o una persona" aria-describedby="list-status"></label>
-        <div class="chips" role="group" aria-label="Filtra le call">
-          <button type="button" class="chip" data-f="all">Tutte le call</button>
+        <label class="search">${ICON.search}<input id="q" type="search" placeholder="${T.search}" autocomplete="off" value="${esc(homeState.q)}" aria-label="${T.search}" aria-describedby="list-status"></label>
+        <div class="chips" role="group" aria-label="${T.filterAria}">
+          <button type="button" class="chip" data-f="all">${T.allCalls}</button>
           ${navOrder().map((n) => `<button type="button" class="chip" data-f="${n.key}">${esc(n.label)}</button>`).join("")}
         </div>
         <p class="sr-only" id="list-status" aria-live="polite"></p>
       </section>
       <section class="wrap" id="list"></section>
       <section class="wrap block" id="team">
-        <h2 class="h-sec">Prenota una call con chi preferisci</h2>
+        <h2 class="h-sec">${T.teamH2}</h2>
         <div class="team-grid">${ids.map(teamCard).join("")}</div>
       </section>
       <section class="wrap block">
-        <h2 class="h-sec">Tutti i programmi in un posto</h2>
+        <h2 class="h-sec">${T.progsH2}</h2>
         <div class="prog-grid">${C.brands.map(progCard).join("")}</div>
       </section>`);
 
@@ -472,12 +568,12 @@
       const gHit = words.every((w) => fold([G.title, G.summary, ...(G.keywords || [])].join(" ")).includes(w));
       const ppl = Object.keys(C.people).filter((id) => words.every((w) => fold(`${person(id).name} ${person(id).role} ${person(id).bio}`).includes(w)));
       const n = hits.length + (gHit ? 1 : 0) + ppl.length;
-      status.textContent = n ? `${n} risultati per «${homeState.q.trim()}»` : `Nessun risultato per «${homeState.q.trim()}»`;
+      status.textContent = n ? T.results(n, homeState.q.trim()) : T.noResults(homeState.q.trim());
       el.innerHTML = n
-        ? `${hits.length || gHit ? `<h2 class="sec">Call</h2><div class="calls">${gHit ? genericCall() : ""}${hits.map(callCard).join("")}</div>` : ""}
-           ${ppl.length ? `<h2 class="sec">Persone</h2><div class="calls">${ppl.map(personRow).join("")}</div>` : ""}`
-        : `<div class="empty"><p><strong>Nessuna call per «${esc(homeState.q.trim())}».</strong></p>
-             <p>Prova con un'altra parola, oppure prenota la call con il team. Ti risponde chi è di turno e ti indirizza.</p></div>
+        ? `${hits.length || gHit ? `<h2 class="sec">${T.calls}</h2><div class="calls">${gHit ? genericCall() : ""}${hits.map(callCard).join("")}</div>` : ""}
+           ${ppl.length ? `<h2 class="sec">${T.people}</h2><div class="calls">${ppl.map(personRow).join("")}</div>` : ""}`
+        : `<div class="empty"><p><strong>${T.noCall(esc(homeState.q.trim()))}</strong></p>
+             <p>${T.tryAgain}</p></div>
            <div class="calls">${genericCall()}</div>`;
       return;
     }
@@ -502,19 +598,19 @@
     document.title = `${b.name} · RankWit Meet`;
     shell(`
       <section class="hero wrap">
-        <h1 class="title">Prenota una call</h1>
+        <h1 class="title">${T.bookACall}</h1>
         <p class="lead">${esc(b.intro)}</p>
       </section>
       <section class="wrap">
         <div class="type-grid">
           ${b.types.map((t) => `
-            <a class="type" href="${href(`/${b.key}/${t.key}`)}" data-link aria-label="${esc(t.title)}, ${t.duration} minuti">
+            <a class="type" href="${href(`/${b.key}/${t.key}`)}" data-link aria-label="${esc(t.title)}, ${t.duration} ${T.minutes}">
               <span class="type-title">${esc(t.title)}</span>
               <span class="type-sum">${esc(t.summary)}</span>
-              <span class="type-foot"><span>${t.duration} minuti · ${t.inPerson ? "di persona" : "Google Meet"}</span><span class="link">Scegli un orario ${ICON.arrow}</span></span>
+              <span class="type-foot"><span>${t.duration} ${T.minutes} · ${t.inPerson ? T.inPerson : "Google Meet"}</span><span class="link">${T.chooseTime} ${ICON.arrow}</span></span>
             </a>`).join("")}
         </div>
-      </section>`, b.tile === "rankwit" ? "Prenota una call" : b.name);
+      </section>`, b.tile === "rankwit" ? T.bookACall : b.name);
   }
 
   /* ---------- prenotazione ---------- */
@@ -525,7 +621,7 @@
     //         headMeta, assign (chi prende l'orario), personal (pagina di una persona) }
     const st = { duration: spec.duration || spec.durations[0], step: "pick", day: null, slot: null, host: null, month: null, data: null, err: "", values: {} };
     const tz = () => spec.timeZone || userTz;
-    const zoneText = (d) => (spec.timeZone ? "ora locale della fiera" : tzLabel(tz(), d));
+    const zoneText = (d) => (spec.timeZone ? T.tzFair : tzLabel(tz(), d));
 
     shell(`
       ${spec.hero || `
@@ -551,7 +647,7 @@
       return {
         day: cap(fmtDay(dayKey(s, tz()), { weekday: "long", day: "numeric", month: "long" })),
         dayYear: cap(fmtDay(dayKey(s, tz()), { weekday: "long", day: "numeric", month: "long", year: "numeric" })),
-        range: `dalle ${fmtTime(s, tz())} alle ${fmtTime(e, tz())}`,
+        range: T.range(fmtTime(s, tz()), fmtTime(e, tz())),
         zone: `${zoneText(s)} (${tzOffset(tz(), s)})`,
       };
     };
@@ -567,40 +663,40 @@
         ${brandMark(spec.brand)}
         <h2 class="h2">${esc(spec.name)}</h2>
         ${choose
-          ? `<div class="durs" role="group" aria-label="Durata">${spec.durations.map((d) => `<button type="button" class="dur" data-d="${d}" aria-pressed="${d === st.duration}">${d} min</button>`).join("")}</div>`
+          ? `<div class="durs" role="group" aria-label="${T.duration}">${spec.durations.map((d) => `<button type="button" class="dur" data-d="${d}" aria-pressed="${d === st.duration}">${d} min</button>`).join("")}</div>`
           : ""}
         <ul class="facts">
-          ${choose ? "" : `<li>${ICON.clock}<span>${st.duration} minuti</span></li>`}
+          ${choose ? "" : `<li>${ICON.clock}<span>${st.duration} ${T.minutes}</span></li>`}
           ${spec.inPerson
-            ? `<li>${ICON.pin}<span>Di persona, ${esc(spec.place)}${spec.placeName ? ` · ${esc(spec.placeName)}` : ""}</span></li>`
-            : `<li>${ICON.video}<span>Google Meet, il link arriva con l'invito</span></li>`}
+            ? `<li>${ICON.pin}<span>${T.inPersonCap}, ${esc(spec.place)}${spec.placeName ? ` · ${esc(spec.placeName)}` : ""}</span></li>`
+            : `<li>${ICON.video}<span>${T.meetLink}</span></li>`}
           <li>${ICON.ok}<span>${cap(free(spec.inPerson))}</span></li>
         </ul>
         ${hosts}
         ${w ? `<div class="chosen"><strong>${esc(w.dayYear)}</strong><span>${esc(w.range)} · ${esc(w.zone)}</span></div>` : ""}
         ${st.step === "done" ? "" : `
         <div class="share">
-          <button type="button" class="share-btn" data-copy>${ICON.link}<span>Copia link</span></button>
-          ${navigator.share ? `<button type="button" class="share-btn" data-share>${ICON.share}<span>Condividi</span></button>` : ""}
+          <button type="button" class="share-btn" data-copy>${ICON.link}<span>${T.copyLink}</span></button>
+          ${navigator.share ? `<button type="button" class="share-btn" data-share>${ICON.share}<span>${T.share}</span></button>` : ""}
         </div>`}`;
       const shareText = spec.personal
-        ? `Prenota una call con ${person(spec.people[0]).name} di ${C.site.organisation}`
+        ? T.bookWithOf(person(spec.people[0]).name, C.site.organisation)
         : `${spec.name}, ${C.site.organisation}`;
       summary.querySelector("[data-copy]")?.addEventListener("click", async (ev) => {
         const btn = ev.currentTarget;
-        flash(btn, (await copyText(pageUrl())) ? "Link copiato" : "Non riesco a copiare");
+        flash(btn, (await copyText(pageUrl())) ? T.copied : T.copyFail);
       });
       summary.querySelector("[data-share]")?.addEventListener("click", (ev) =>
-        shareOrCopy(ev.currentTarget, { title: document.title, text: shareText, url: pageUrl() }, "Link copiato"));
+        shareOrCopy(ev.currentTarget, { title: document.title, text: shareText, url: pageUrl() }, T.copied));
       summary.querySelectorAll(".dur").forEach((b) =>
         b.addEventListener("click", () => { st.duration = Number(b.dataset.d); st.slot = null; st.host = null; drawSummary(); load(b.dataset.d); }));
     }
 
     const panelHead = (title, step) =>
-      `<div class="panel-head"><h2 class="h2" tabindex="-1">${title}</h2>${step ? `<span class="step-of">Passo ${step} di 2</span>` : ""}</div>`;
+      `<div class="panel-head"><h2 class="h2" tabindex="-1">${title}</h2>${step ? `<span class="step-of">${T.stepOf(step)}</span>` : ""}</div>`;
 
     async function load(refocusDur) {
-      panel.innerHTML = `${panelHead("Scegli un orario", 1)}<div class="loading" role="status"><span class="spin" aria-hidden="true"></span>Carico gli orari liberi</div>`;
+      panel.innerHTML = `${panelHead(T.chooseTime, 1)}<div class="loading" role="status"><span class="spin" aria-hidden="true"></span>${T.loading}</div>`;
       st.data = await mergedSlots(spec.people, spec.slugOf, st.duration, spec.dates);
       computeDays();
       st.day = st.days[0] || null;
@@ -616,11 +712,12 @@
 
     function tzLine() {
       const off = tzOffset(tz());
-      if (spec.timeZone) return `<div class="tz"><p class="tz-line">${ICON.globe}<span>Orari nell'<strong>ora locale della fiera</strong> <span class="tz-off">${esc(off)}</span></span></p></div>`;
+      const timesIn = (label) => `${T.timesIn}${EN ? " " : ""}<strong>${label}</strong>`;
+      if (spec.timeZone) return `<div class="tz"><p class="tz-line">${ICON.globe}<span>${timesIn(T.tzFair)} <span class="tz-off">${esc(off)}</span></span></p></div>`;
       return `<div class="tz">
-        <p class="tz-line">${ICON.globe}<span>Orari nell'<strong>${esc(tzLabel(userTz))}</strong> <span class="tz-off">${esc(off)}</span></span></p>
-        <p class="tz-sub"><span class="quiet">${tzAuto && !st.tzChanged ? "Impostato in automatico" : "Scelto da te"}</span> <button type="button" class="tz-change" id="tz-change" aria-expanded="false" aria-controls="tz-pick">Cambia</button></p>
-        <label class="tz-pick" id="tz-pick" hidden><span class="sr-only">Fuso orario</span><select id="tz-select">${tzOptions()}</select></label>
+        <p class="tz-line">${ICON.globe}<span>${timesIn(esc(tzLabel(userTz)))} <span class="tz-off">${esc(off)}</span></span></p>
+        <p class="tz-sub"><span class="quiet">${tzAuto && !st.tzChanged ? T.auto : T.byYou}</span> <button type="button" class="tz-change" id="tz-change" aria-expanded="false" aria-controls="tz-pick">${T.change}</button></p>
+        <label class="tz-pick" id="tz-pick" hidden><span class="sr-only">${T.timeZone}</span><select id="tz-select">${tzOptions()}</select></label>
       </div>`;
     }
 
@@ -642,8 +739,8 @@
       st.step = "pick";
       const { map, failed } = st.data;
       if (!map.size) {
-        panel.innerHTML = `${panelHead("Scegli un orario", 1)}<div class="empty"><p><strong>${spec.dates ? "In quei giorni non ci sono più orari liberi." : `Nei prossimi ${C.rules.windowDays} giorni non ci sono orari liberi.`}</strong></p>
-          <p>Scrivici a <a href="mailto:${esc(C.site.contact)}">${esc(C.site.contact)}</a> e troviamo un momento.</p></div>`;
+        panel.innerHTML = `${panelHead(T.chooseTime, 1)}<div class="empty"><p><strong>${spec.dates ? T.noneThoseDays : T.noneNext(C.rules.windowDays)}</strong></p>
+          <p>${T.writeUs(esc(C.site.contact))}</p></div>`;
         return;
       }
       const [y, m] = st.month;
@@ -658,7 +755,7 @@
         const key = `${y}-${String(m + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
         const cls = `day${open.has(key) ? " open" : ""}${key === st.day ? " sel" : ""}${key === today ? " today" : ""}`;
         cells += open.has(key)
-          ? `<button type="button" class="${cls}" data-day="${key}" aria-pressed="${key === st.day}" tabindex="${key === tabDay ? 0 : -1}" aria-label="${esc(fmtDay(key, { weekday: "long", day: "numeric", month: "long" }))}${key === today ? ", oggi" : ""}">${d}</button>`
+          ? `<button type="button" class="${cls}" data-day="${key}" aria-pressed="${key === st.day}" tabindex="${key === tabDay ? 0 : -1}" aria-label="${esc(fmtDay(key, { weekday: "long", day: "numeric", month: "long" }))}${key === today ? T.today : ""}">${d}</button>`
           : `<span class="${cls}">${d}</span>`;
       }
       const months = [...new Set(st.days.map((k) => k.slice(0, 7)))];
@@ -666,29 +763,29 @@
       const times = [...map.entries()].filter(([iso]) => dayKey(new Date(iso), tz()) === st.day).sort(([a], [b]) => (a < b ? -1 : 1));
 
       panel.innerHTML = `
-        ${panelHead("Scegli un orario", 1)}
+        ${panelHead(T.chooseTime, 1)}
         <div class="picker">
           <div class="cal">
             <div class="cal-head">
-              <button type="button" class="nav-btn" data-mo="-1" ${idx <= 0 ? "disabled" : ""} aria-label="Mese precedente">${ICON.left}</button>
+              <button type="button" class="nav-btn" data-mo="-1" ${idx <= 0 ? "disabled" : ""} aria-label="${T.prevMonth}">${ICON.left}</button>
               <span class="month" aria-live="polite">${esc(fmtMonth(y, m))}</span>
-              <button type="button" class="nav-btn" data-mo="1" ${idx < 0 || idx >= months.length - 1 ? "disabled" : ""} aria-label="Mese successivo">${ICON.right}</button>
+              <button type="button" class="nav-btn" data-mo="1" ${idx < 0 || idx >= months.length - 1 ? "disabled" : ""} aria-label="${T.nextMonth}">${ICON.right}</button>
             </div>
-            <div class="cal-grid" role="group" aria-label="Giorni con orari liberi. Usa le frecce per spostarti.">${["lun", "mar", "mer", "gio", "ven", "sab", "dom"].map((w) => `<span class="dow" aria-hidden="true">${w}</span>`).join("")}${cells}</div>
+            <div class="cal-grid" role="group" aria-label="${T.gridAria}">${T.dow.map((w) => `<span class="dow" aria-hidden="true">${w}</span>`).join("")}${cells}</div>
             ${tzLine()}
           </div>
           <div class="times" id="times">
             <p class="day-name">${st.day ? esc(cap(fmtDay(st.day, { weekday: "long", day: "numeric", month: "long" }))) : ""}</p>
-            <div class="slot-list" role="group" aria-label="Orari liberi">
+            <div class="slot-list" role="group" aria-label="${T.freeTimes}">
               ${times.map(([iso, freeIds]) => `
                 <div class="slot-row${iso === st.slot ? " sel" : ""}">
                   <button type="button" class="slot" data-slot="${iso}" data-free="${freeIds.join(",")}" aria-pressed="${iso === st.slot}">${fmtTime(new Date(iso), tz())}</button>
-                  ${iso === st.slot ? `<button type="button" class="btn" data-next>Avanti</button>` : ""}
+                  ${iso === st.slot ? `<button type="button" class="btn" data-next>${T.next}</button>` : ""}
                 </div>`).join("")}
             </div>
           </div>
         </div>
-        ${failed.length ? `<p class="warn">Non riesco a leggere gli orari di ${esc(list(failed, "e"))}, per ora non li vedi.</p>` : ""}`;
+        ${failed.length ? `<p class="warn">${T.cantRead(esc(list(failed, T.and)))}</p>` : ""}`;
 
       panel.querySelectorAll("[data-day]").forEach((b) => b.addEventListener("click", () => {
         setDay(b.dataset.day);
@@ -779,26 +876,26 @@
       const values = st.values;
       const v = (k) => esc(values[k] || "");
       panel.innerHTML = `
-        <button type="button" class="back" id="back">${ICON.back} Cambia orario</button>
-        ${panelHead("I tuoi dati", 2)}
+        <button type="button" class="back" id="back">${ICON.back} ${T.changeTime}</button>
+        ${panelHead(T.yourDetails, 2)}
         <form class="form" novalidate>
           <div class="row2">
-            <div class="field"><label for="f-name">Nome e cognome</label><input id="f-name" name="name" autocomplete="name" required value="${v("name")}"></div>
-            <div class="field"><label for="f-email">Email</label><input id="f-email" name="email" type="email" inputmode="email" autocomplete="email" required value="${v("email")}"></div>
+            <div class="field"><label for="f-name">${T.fullName}</label><input id="f-name" name="name" autocomplete="name" required value="${v("name")}"></div>
+            <div class="field"><label for="f-email">${T.email}</label><input id="f-email" name="email" type="email" inputmode="email" autocomplete="email" required value="${v("email")}"></div>
           </div>
           <div class="row2">
-            <div class="field"><label for="f-org">Hotel, ente o azienda</label><input id="f-org" name="organisation" autocomplete="organization" required value="${v("organisation")}"></div>
-            <div class="field"><label for="f-role">Ruolo <span class="opt">(facoltativo)</span></label><input id="f-role" name="role" autocomplete="organization-title" value="${v("role")}"></div>
+            <div class="field"><label for="f-org">${T.org}</label><input id="f-org" name="organisation" autocomplete="organization" required value="${v("organisation")}"></div>
+            <div class="field"><label for="f-role">${T.role} <span class="opt">${T.optional}</span></label><input id="f-role" name="role" autocomplete="organization-title" value="${v("role")}"></div>
           </div>
           <div class="field"><label for="f-notes">${esc(spec.prompt)}</label><textarea id="f-notes" name="notes" required>${v("notes")}</textarea></div>
           <label class="check"><input type="checkbox" name="newsletter"${values.newsletter ? " checked" : ""}><span>${esc(C.site.newsletterLabel)}</span></label>
-          <div class="hp" aria-hidden="true"><label>Sito<input name="website" tabindex="-1" autocomplete="off"></label></div>
+          <div class="hp" aria-hidden="true"><label>${T.website}<input name="website" tabindex="-1" autocomplete="off"></label></div>
           ${st.err ? `<p class="form-err" role="alert">${esc(st.err)}</p>` : ""}
           <div class="actions">
-            <button class="btn" type="submit">Conferma la prenotazione</button>
-            <span class="free">${ICON.ok}${st.duration} minuti, ${free(spec.inPerson)}</span>
+            <button class="btn" type="submit">${T.confirm}</button>
+            <span class="free">${ICON.ok}${st.duration} ${T.minutes}, ${free(spec.inPerson)}</span>
           </div>
-          <p class="fine">I dati servono a organizzare questa call e sono trattati secondo la <a href="${esc(C.site.privacyUrl)}" target="_blank" rel="noopener">privacy di RankWit</a>.</p>
+          <p class="fine">${T.fine(esc(C.site.privacyUrl))}</p>
         </form>`;
       panel.querySelector(".h2").focus({ preventScroll: true });
       if (narrow()) panel.scrollIntoView({ block: "start", behavior: reduceMotion() ? "auto" : "smooth" });
@@ -835,19 +932,19 @@
         bad.push(name);
       };
       const email = (data.email || "").trim();
-      if (!data.name?.trim()) mark("name", "Scrivi nome e cognome.");
-      if (!email) mark("email", "Scrivi la tua email.");
-      else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) mark("email", "Questa email non è completa, deve essere come nome@hotel.it.");
-      if (!data.organisation?.trim()) mark("organisation", "Scrivi il nome dell'hotel, dell'ente o dell'azienda.");
-      if (!data.notes?.trim()) mark("notes", "Scrivi in una o due righe di cosa vuoi parlare.");
+      if (!data.name?.trim()) mark("name", T.vName);
+      if (!email) mark("email", T.vEmail);
+      else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) mark("email", T.vEmailBad);
+      if (!data.organisation?.trim()) mark("organisation", T.vOrg);
+      if (!data.notes?.trim()) mark("notes", T.vNotes);
       if (bad.length) { form.querySelector(`[name="${bad[0]}"]`).focus(); return; }
 
       const btn = form.querySelector('button[type="submit"]');
       btn.disabled = true;
-      btn.innerHTML = `<span class="spin light" aria-hidden="true"></span>Confermo la prenotazione`;
+      btn.innerHTML = `<span class="spin light" aria-hidden="true"></span>${T.confirming}`;
       const slug = spec.slugOf(st.host, st.duration);
       const notes = `${spec.prompt}\n${data.notes.trim()}\n\n${data.organisation.trim()}${data.role?.trim() ? ` · ${data.role.trim()}` : ""}`;
-      const metadata = { tema: spec.topic, fonte: "book.rankwit.ai", organizzazione: data.organisation.trim().slice(0, 500) };
+      const metadata = { tema: spec.topic, fonte: "book.rankwit.ai", lingua: LANG, organizzazione: data.organisation.trim().slice(0, 500) };
       if (data.role?.trim()) metadata.ruolo = data.role.trim().slice(0, 500);
       if (data.newsletter) metadata.newsletter = "si";
       if (source) metadata.provenienza = source.slice(0, 100);
@@ -865,11 +962,11 @@
           st.slot = null; st.host = null;
           if (history.state?.rw === "dati") history.replaceState(null, "", `${location.pathname}${location.search}`);
           await load();
-          panel.insertAdjacentHTML("afterbegin", `<p class="form-err" role="alert">Questo orario non è più libero. Scegline un altro, i tuoi dati restano salvati.</p>`);
+          panel.insertAdjacentHTML("afterbegin", `<p class="form-err" role="alert">${T.taken}</p>`);
           drawSummary();
           return;
         }
-        st.err = `Non sono riuscito a confermare la prenotazione. Riprova tra poco o scrivici a ${C.site.contact}.`;
+        st.err = T.failed(C.site.contact);
         drawForm();
       }
     }
@@ -880,35 +977,35 @@
       drawSummary();
       const host = person(st.host);
       const w = whenText();
-      if (heroTitle) heroTitle.textContent = "Prenotazione confermata";
+      if (heroTitle) heroTitle.textContent = T.confirmed;
       panel.innerHTML = `
         <div class="done">
           <span class="done-icon" aria-hidden="true">${ICON.check}</span>
-          <h2 class="h2" tabindex="-1">${spec.inPerson ? "Ci vediamo allo stand" : "Ci sentiamo presto"}</h2>
+          <h2 class="h2" tabindex="-1">${spec.inPerson ? T.seeYouStand : T.talkSoon}</h2>
           <p class="done-when"><strong>${esc(w.day)}, ${esc(w.range)}</strong> <span>${esc(w.zone)}</span></p>
           <p>${spec.inPerson
-            ? `L'invito con il luogo è in arrivo a <strong>${esc(data.email)}</strong>.`
+            ? T.inviteVenue(esc(data.email))
             : spec.personal
-              ? `La call è con ${esc(host.name)}. L'invito con il link Google Meet è in arrivo a <strong>${esc(data.email)}</strong>.`
-              : `L'invito con il link Google Meet è in arrivo a <strong>${esc(data.email)}</strong>.`}</p>
+              ? T.inviteWith(esc(host.name), esc(data.email))
+              : T.invite(esc(data.email))}</p>
           ${spec.prepare ? `<p>${esc(spec.prepare)}</p>` : ""}
-          <p class="quiet">Dall'email di conferma puoi spostare o cancellare la call.</p>
-          ${res.demo ? `<p class="demo-note">È una prova. ${spec.personal ? esc(host.name) : "Chi farà la call"} non ha ancora collegato cal.com, quindi nessuna prenotazione è stata creata.</p>` : ""}
+          <p class="quiet">${T.moveCancel}</p>
+          ${res.demo ? `<p class="demo-note">${T.demoNote(spec.personal ? esc(host.name) : T.theHost)}</p>` : ""}
           ${spec.inPerson ? "" : `
           <div class="done-share">
-            <p class="done-share-text">Vuoi che venga anche un collega? Mandagli giorno, ora e link della call.</p>
+            <p class="done-share-text">${T.shareColleague}</p>
             <div class="done-share-btns">
-              <button type="button" class="btn" data-share-done>${ICON.share}<span>Condividi con un collega</span></button>
-              <button type="button" class="btn ghost" data-ics>${ICON.cal}<span>Scarica per il calendario</span></button>
+              <button type="button" class="btn" data-share-done>${ICON.share}<span>${T.shareBtn}</span></button>
+              <button type="button" class="btn ghost" data-ics>${ICON.cal}<span>${T.icsBtn}</span></button>
             </div>
           </div>`}
-          <a class="btn ghost" href="${href("/")}" data-link>Torna a tutte le call</a>
+          <a class="btn ghost" href="${href("/")}" data-link>${T.backAll}</a>
         </div>`;
       if (!spec.inPerson) {
         // Il link Meet arriva da cal.com nella risposta, se Google l'ha già creato.
         const meet = [res.meetingUrl, res.location].find((u) => /^https:\/\/meet\.google\.com\//.test(u || "")) || "";
-        const title = spec.personal ? `Call con ${host.name} di ${C.site.organisation}` : `${spec.name}, ${C.site.organisation}`;
-        const lines = [title, `${w.day}, ${w.range}, ${w.zone}`, meet ? `Google Meet ${meet}` : "Il link Google Meet è nell'invito di cal.com, che puoi inoltrare."];
+        const title = spec.personal ? T.callWithOf(host.name, C.site.organisation) : `${spec.name}, ${C.site.organisation}`;
+        const lines = [title, `${w.day}, ${w.range}, ${w.zone}`, meet ? `Google Meet ${meet}` : T.meetInInvite];
         const ics = () => icsFile({ start: st.slot, minutes: st.duration, title, details: lines.slice(1).join("\n"), url: meet });
         panel.querySelector("[data-share-done]").addEventListener("click", async (ev) => {
           const btn = ev.currentTarget;
@@ -917,7 +1014,7 @@
           if (navigator.canShare?.({ files: [file] })) {
             try { await navigator.share({ ...data, files: [file] }); return; } catch (e) { if (e.name === "AbortError") return; }
           }
-          shareOrCopy(btn, data, "Dettagli copiati");
+          shareOrCopy(btn, data, T.detailsCopied);
         });
         panel.querySelector("[data-ics]").addEventListener("click", () => {
           const a = Object.assign(document.createElement("a"), { href: URL.createObjectURL(ics()), download: "call-rankwit.ics" });
@@ -965,41 +1062,41 @@
       people: t.people, durations: [t.duration], prepare: t.prepare,
       slugOf: (id, d) => slugFor(id, d, t.slug), topic: `${b.key}/${t.key}`, prompt: t.prompt,
       dates: t.dates, inPerson: t.inPerson, place: t.place, placeName: b.example || !b.logo ? b.name : "",
-      timeZone: t.timeZone, headMeta: b.tile === "rankwit" ? "Prenota una call" : b.name,
+      timeZone: t.timeZone, headMeta: b.tile === "rankwit" ? T.bookACall : b.name,
     });
   }
 
   function renderPerson(id) {
     const p = person(id);
     const ds = durationsOf(id);
-    document.title = `Prenota una call con ${p.name} · RankWit Meet`;
+    document.title = T.personTitle(p.name);
     const img = p.portrait || p.photo
       ? `<img class="portrait" src="${esc(p.portrait || p.photo)}" alt="">`
       : `<span class="portrait ini" aria-hidden="true">${esc(initials(p.name))}</span>`;
     renderBooking({
-      brand: { short: "RankWit" }, name: `Call con ${p.name}`, people: [id], personal: true,
+      brand: { short: "RankWit" }, name: `${T.callWith} ${p.name}`, people: [id], personal: true,
       durations: ds, duration: ds.includes(C.personalDefault) ? C.personalDefault : ds[0],
-      slugOf: (pid, d) => slugFor(pid, d), topic: `persona/${id}`, prompt: "Di cosa vuoi parlare?",
-      prepare: "Se vuoi, rispondi all'invito con il sito o i materiali da guardare insieme.",
-      headMeta: "Prenota una call",
+      slugOf: (pid, d) => slugFor(pid, d), topic: `persona/${id}`, prompt: T.personPrompt,
+      prepare: T.personPrepare,
+      headMeta: T.bookACall,
       hero: `
         <section class="hero wrap person-hero">
           ${img}
           <div class="person-text">
-            <h1 class="title">Prenota una call con ${esc(p.name)}</h1>
+            <h1 class="title">${T.bookWith} ${esc(p.name)}</h1>
             <p class="person-role">${esc(p.role)}</p>
-            <p class="lead">${esc(p.bio)} Ci sentiamo su Google Meet, nel giorno e all'ora che preferisci.</p>
-            <p class="url">${ICON.globe}<span>book.rankwit.ai/${esc(id)}</span></p>
+            <p class="lead">${esc(p.bio)} ${T.personLead}</p>
+            <p class="url">${ICON.globe}<span>book.rankwit.ai/${EN ? "en/" : ""}${esc(id)}</span></p>
           </div>
         </section>`,
     });
   }
 
   function renderNotFound() {
-    document.title = "Pagina non trovata · RankWit Meet";
-    shell(`<section class="hero wrap"><h1 class="title">Questo link non è valido</h1>
-      <p class="lead">Il link potrebbe essere incompleto. Da qui puoi scegliere il tema o la persona.</p>
-      <p class="hero-cta"><a class="btn" href="${href("/")}" data-link>Vedi tutte le call</a></p></section>`);
+    document.title = T.nfTitle;
+    shell(`<section class="hero wrap"><h1 class="title">${T.nfH1}</h1>
+      <p class="lead">${T.nfLead}</p>
+      <p class="hero-cta"><a class="btn" href="${href("/")}" data-link>${T.nfBtn}</a></p></section>`);
   }
 
   /* ---------- router ---------- */
@@ -1007,9 +1104,11 @@
   function route() {
     booker = null;
     if (location.hash === "#dati") history.replaceState(null, "", `${location.pathname}${location.search}`);
-    const path = BASE && location.pathname.startsWith(BASE) ? location.pathname.slice(BASE.length) : location.pathname;
-    const parts = decodeURIComponent(path).replace(/\/+$/, "").split("/").filter(Boolean).map((s) => s.toLowerCase());
-    if (!parts.length || parts[0] === "index.html") return renderHome();
+    const parts = decodeURIComponent(routePath()).replace(/\/+$/, "").split("/").filter(Boolean).map((s) => s.toLowerCase());
+    if (parts[0] === "en") parts.shift(); // la lingua è già stata letta al caricamento
+    if (parts[parts.length - 1] === "index.html") parts.pop();
+    current = `/${parts.join("/")}`;
+    if (!parts.length) return renderHome();
     const [a, b] = parts;
     if (parts.length === 1 && C.people[a]) return renderPerson(a);
     if (parts.length === 1 && a === G.key) return renderGeneric();

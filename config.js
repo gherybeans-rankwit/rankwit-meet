@@ -126,7 +126,7 @@ window.RW_BOOK = {
           eyebrow: "Audit AI · Destinazioni",
           title: "Audit AI della destinazione",
           book: "Prenota l'audit AI della destinazione",
-          duration: 45,
+          duration: 30,
           summary: "Per DMO, comuni e consorzi. Vediamo come l'AI racconta il tuo territorio, quali fonti usa e dove mancano informazioni.",
           prompt: "Di quale destinazione ti occupi, e con quale ente?",
           people: ["gherardo", "davide"],

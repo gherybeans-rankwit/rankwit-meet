@@ -30,6 +30,15 @@ const template = read("index.html")
   .replace(/<div id="app">[\s\S]*?<\/div>\n  <noscript>/, '<div id="app"></div>\n  <noscript>');
 
 const people = Object.entries(C.people);
+
+// Ogni call deve avere almeno una persona con cal.com e un evento della sua durata,
+// altrimenti online non mostra orari.
+const bookable = (ids, d, slug) => ids.filter((id) => C.people[id]?.cal && C.people[id].events?.[slug || d]);
+const missing = [
+  ...(bookable(C.generic.people, C.generic.duration).length ? [] : [C.generic.title]),
+  ...C.brands.filter((b) => !b.example).flatMap((b) => b.types.filter((t) => !bookable(t.people, t.duration, t.slug).length).map((t) => `${t.title} (${t.duration} min)`)),
+];
+if (missing.length) console.warn(`ATTENZIONE, queste call non hanno nessuno prenotabile:\n- ${missing.join("\n- ")}`);
 const realBrands = C.brands.filter((b) => !b.example);
 const calls = realBrands.flatMap((b) => b.types.map((t) => ({ b, t })));
 

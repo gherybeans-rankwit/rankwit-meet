@@ -38,13 +38,13 @@ const TEXT = {
     prefix: "", locale: "it_IT",
     noscript: "Per prenotare serve JavaScript. Puoi scriverci a info@rankwit.ai.",
     navAria: "Tutte le call", callWith: "Call con",
-    homeTitle: "Prenota una call · RankWit AI",
+    homeTitle: "Prenota una call | RankWit",
     homeDesc: "Scegli il tema o la persona e prenota una call con il team RankWit AI su Google Meet.",
     homeH1: "Di cosa vuoi parlare?",
     homeLead: (G) => `${G.summary} ${G.duration} minuti, gratuita e senza impegno.`,
     bookACall: "Prenota una call",
     typeLead: (t) => `${t.summary} ${t.duration} minuti su Google Meet, gratuita e senza impegno.`,
-    personTitle: (p) => `Prenota una call con ${p.name} · RankWit Meet`,
+    personTitle: (p) => `Prenota una call con ${p.name} | RankWit`,
     personDesc: (p, org) => `${p.bio} Prenota una call con ${p.name}, ${p.role} di ${org}, su Google Meet.`,
     personH1: (p) => `Prenota una call con ${p.name}`,
     personLead: (p) => `${p.bio} Ci sentiamo su Google Meet, nel giorno e all'ora che preferisci.`,
@@ -53,13 +53,13 @@ const TEXT = {
     prefix: "/en", locale: "en_US",
     noscript: "JavaScript is needed to book. You can write to us at info@rankwit.ai.",
     navAria: "All calls", callWith: "Call with",
-    homeTitle: "Book a call · RankWit AI",
+    homeTitle: "Book a call | RankWit",
     homeDesc: "Choose a topic or a person and book a call with the RankWit AI team on Google Meet.",
     homeH1: "What would you like to talk about?",
     homeLead: (G) => `${G.summary} ${G.duration} minutes, free and with no commitment.`,
     bookACall: "Book a call",
     typeLead: (t) => `${t.summary} ${t.duration} minutes on Google Meet, free and with no commitment.`,
-    personTitle: (p) => `Book a call with ${p.name} · RankWit Meet`,
+    personTitle: (p) => `Book a call with ${p.name} | RankWit`,
     personDesc: (p, org) => `${p.bio} Book a call with ${p.name}, ${p.role} at ${org}, on Google Meet.`,
     personH1: (p) => `Book a call with ${p.name}`,
     personLead: (p) => `${p.bio} We meet on Google Meet, on the day and at the time you prefer.`,
@@ -116,18 +116,18 @@ for (const lang of ["it", "en"]) {
   const add = (route, o) => pages.push({ lang, route, ...o });
 
   add("/", { title: W.homeTitle, desc: W.homeDesc, h1: W.homeH1, lead: W.homeLead(G) });
-  add(`/${G.key}`, { title: `${G.title} · RankWit Meet`, desc: G.summary, h1: G.book, lead: G.summary });
+  add(`/${G.key}`, { title: `${G.title} | RankWit`, desc: G.summary, h1: G.book, lead: G.summary });
 
   for (const b of realBrands) {
     if (b.types.length === 1) {
       // La pagina del programma porta subito all'unica call: in sitemap va solo quella.
       const t = b.types[0];
-      add(`/${b.key}`, { title: `${b.name} · RankWit Meet`, desc: b.intro, h1: b.name, lead: b.intro, canonical: `/${b.key}/${t.key}`, sitemap: false });
+      add(`/${b.key}`, { title: `${b.name} | RankWit`, desc: b.intro, h1: b.name, lead: b.intro, canonical: `/${b.key}/${t.key}`, sitemap: false });
     } else {
-      add(`/${b.key}`, { title: `${b.name} · RankWit Meet`, desc: b.intro, h1: W.bookACall, lead: b.intro });
+      add(`/${b.key}`, { title: `${b.name} | RankWit`, desc: b.intro, h1: W.bookACall, lead: b.intro });
     }
     for (const t of b.types) {
-      add(`/${b.key}/${t.key}`, { title: `${t.title} · RankWit Meet`, desc: t.summary, h1: t.book || t.title, lead: W.typeLead(t) });
+      add(`/${b.key}/${t.key}`, { title: `${t.title} | RankWit`, desc: t.summary, h1: t.book || t.title, lead: W.typeLead(t) });
     }
   }
 
@@ -142,7 +142,11 @@ for (const lang of ["it", "en"]) {
   const head = (pg) => {
     const url = abs(pg.canonical || pg.route);
     const other = lang === "it" ? "en" : "it";
-    const img = pg.image ? `\n  <meta property="og:image" content="${SITE}/${pg.image}">` : "";
+    // Immagine social: la foto della persona se c'è (formato verticale, anteprima piccola),
+    // altrimenti quella di default della lingua (1200 × 630, anteprima grande).
+    // Always the 1200 x 630 PNG of the language: the WebP portraits are not read by every social preview.
+    const img = `\n  <meta property="og:image" content="${SITE}/assets/brand/og-${lang}.png">\n  <meta property="og:image:width" content="1200">\n  <meta property="og:image:height" content="630">`;
+    const card = "summary_large_image";
     return `
   <!-- seo -->
   <link rel="canonical" href="${url}">
@@ -156,7 +160,7 @@ for (const lang of ["it", "en"]) {
   <meta property="og:title" content="${esc(pg.title)}">
   <meta property="og:description" content="${esc(pg.desc)}">
   <meta property="og:url" content="${url}">${img}
-  <meta name="twitter:card" content="summary">
+  <meta name="twitter:card" content="${card}">
   <!-- /seo -->`;
   };
 
@@ -186,7 +190,7 @@ for (const lang of ["it", "en"]) {
   if (lang === "it") {
     write("404.html", template
       .replace("NOSCRIPT", W.noscript)
-      .replace(/<title>[\s\S]*?<\/title>/, "<title>Pagina non trovata · RankWit Meet</title>")
+      .replace(/<title>[\s\S]*?<\/title>/, "<title>Pagina non trovata | RankWit</title>")
       .replace(/(<link rel="icon")/, '<meta name="robots" content="noindex">\n  $1'));
   }
 }

@@ -16,7 +16,40 @@
   const C = window.RW_LOCALIZE(window.RW_BOOK, LANG);
   const app = document.getElementById("app");
   const API = "https://api.cal.com/v2";
-  const source = new URLSearchParams(location.search).get("da") || "";
+  // Parametri nell'indirizzo. `da` dice da dove arriva la persona e finisce nei
+  // metadati della prenotazione. nome (o name), email, azienda, ruolo, sito e
+  // nota precompilano il modulo «I tuoi dati», così chi ha già scritto i suoi
+  // dati in un form non li riscrive: il link nell'email di grazie li porta qui.
+  // Si leggono una volta e poi si tolgono dall'indirizzo: restano nella pagina,
+  // non nella barra né nella cronologia.
+  const params = new URLSearchParams(location.search);
+  const source = params.get("da") || "";
+  const PREFILL = {
+    name: params.get("nome") || params.get("name") || "",
+    email: params.get("email") || "",
+    organisation: params.get("azienda") || "",
+    role: params.get("ruolo") || "",
+    site: params.get("sito") || "",
+    notes: params.get("nota") || "",
+  };
+  if (Object.values(PREFILL).some(Boolean)) {
+    history.replaceState(history.state, "", `${location.pathname}${source ? `?da=${encodeURIComponent(source)}` : ""}${location.hash}`);
+  }
+  // Dominio pulito di un sito scritto in qualsiasi modo: https://www.hotel.it/camere diventa hotel.it.
+  const domainOf = (u) => (u || "").trim().replace(/^https?:\/\//i, "").replace(/^www\./i, "").split(/[/?#]/)[0].toLowerCase();
+  // Valori iniziali del modulo: quelli arrivati nell'indirizzo, altrimenti vuoti.
+  // Senza azienda si propone il dominio del sito; senza nota, una riga sul report del sito.
+  const prefillValues = () => {
+    const site = domainOf(PREFILL.site);
+    return {
+      name: PREFILL.name.trim(),
+      email: PREFILL.email.trim(),
+      organisation: PREFILL.organisation.trim() || site,
+      role: PREFILL.role.trim(),
+      notes: PREFILL.notes.trim() || (site ? T.prefillNotes(site) : ""),
+      newsletter: false,
+    };
+  };
   let current = "/"; // l'indirizzo della pagina senza base e senza /en, per il cambio lingua
 
   /* ---------- testi dell'interfaccia ---------- */
@@ -28,7 +61,7 @@
     bookACall: "Book a call", allCallsAria: "RankWit Meet, all calls", switchAria: "Versione italiana",
     free: "free, no commitment", minutes: "minutes", example: "Example", callWith: "Call with", bookWith: "Book a call with", callTypes: "call types",
     chooseTime: "Choose a time", chooseTimeLower: "choose a time",
-    homeTitle: "Book a call · RankWit AI", homeH1: "What would you like to talk about?",
+    homeTitle: "Book a call | RankWit", homeH1: "What would you like to talk about?",
     homeLead: "Not sure who to write to? Book half an hour with the team. Whoever is on duty answers and, if needed, passes you to the right person. Every call is on Google Meet, at the times of your time zone.",
     bookTeam: "Book a call with the team", facesAria: "The team, pick who to talk to", facesNote: "Or pick who you want to talk to.",
     search: "Search a topic or a person", filterAria: "Filter the calls", allCalls: "All calls", teamH2: "Book a call with whoever you prefer", progsH2: "All programmes in one place",
@@ -43,11 +76,12 @@
     prevMonth: "Previous month", nextMonth: "Next month", gridAria: "Days with free times. Use the arrow keys to move.",
     dow: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"], today: ", today", freeTimes: "Free times", next: "Next",
     cantRead: (who) => `I cannot read the times of ${who}, so they are not shown for now.`,
-    changeTime: "Change time", yourDetails: "Your details", fullName: "Full name", email: "Email", org: "Hotel, organisation or company", role: "Role", optional: "(optional)", website: "Website",
+    changeTime: "Change time", yourDetails: "Your details", fullName: "Full name", email: "Email", org: "Hotel, organisation or company", role: "Role", optional: "(optional)", website: "Website", leaveEmpty: "Leave this field empty",
     confirm: "Confirm the booking", confirming: "Confirming the booking",
     fine: (u) => `We use these details to set up this call, under <a href="${u}" target="_blank" rel="noopener">RankWit's privacy policy</a>.`,
     vName: "Enter your full name.", vEmail: "Enter your email.", vEmailBad: "This email is incomplete. It should look like name@hotel.com.",
     vOrg: "Enter the name of your hotel, organisation or company.", vNotes: "Tell us in a line or two what you would like to talk about.",
+    prefillNotes: (site) => `Looking at the report on ${site} together.`,
     taken: "This time is no longer free. Choose another one, your details are kept.", failed: (c) => `We could not confirm the booking. Try again in a moment or write to us at ${c}.`,
     confirmed: "Booking confirmed", seeYouStand: "See you at the stand", talkSoon: "Talk soon",
     inviteVenue: (e) => `The invitation with the venue is on its way to <strong>${e}</strong>.`,
@@ -57,10 +91,10 @@
     demoNote: (who) => `This is a test. ${who} has not connected cal.com yet, so no booking was created.`, theHost: "The host",
     shareColleague: "Want a colleague to join? Send them the day, time and link of the call.", shareBtn: "Share with a colleague", icsBtn: "Add to calendar", backAll: "Back to all calls",
     callWithOf: (n, o) => `Call with ${n} of ${o}`, meetInInvite: "The Google Meet link is in the cal.com invitation, which you can forward.",
-    personTitle: (n) => `Book a call with ${n} · RankWit Meet`, personPrompt: "What would you like to talk about?",
+    personTitle: (n) => `Book a call with ${n} | RankWit`, personPrompt: "What would you like to talk about?",
     personPrepare: "If you like, reply to the invitation with the website or the material to look at together.",
     personLead: "We meet on Google Meet, on the day and at the time you prefer.",
-    nfTitle: "Page not found · RankWit Meet", nfH1: "This link is not valid", nfLead: "The link may be incomplete. From here you can choose a topic or a person.", nfBtn: "See all calls",
+    nfTitle: "Page not found | RankWit", nfH1: "This link is not valid", nfLead: "The link may be incomplete. From here you can choose a topic or a person.", nfBtn: "See all calls",
   } : {
     tzItaly: "ora italiana", tzCET: "ora dell'Europa centrale", tzCity: (c) => `ora di ${c}`, tzFair: "ora locale della fiera",
     or: "o", and: "e",
@@ -68,7 +102,7 @@
     bookACall: "Prenota una call", allCallsAria: "RankWit Meet, tutte le call", switchAria: "English version",
     free: null, minutes: "minuti", example: "Esempio", callWith: "Call con", bookWith: "Prenota una call con", callTypes: "tipi di call",
     chooseTime: "Scegli un orario", chooseTimeLower: "scegli un orario",
-    homeTitle: "Prenota una call · RankWit AI", homeH1: "Di cosa vuoi parlare?",
+    homeTitle: "Prenota una call | RankWit", homeH1: "Di cosa vuoi parlare?",
     homeLead: "Non sai a chi scrivere? Prenota mezz'ora con il team. Ti risponde chi è di turno e, se serve, ti passa la persona giusta. Ogni call si fa su Google Meet, negli orari del tuo fuso.",
     bookTeam: "Prenota una call con il team", facesAria: "Il team, scegli tu con chi parlare", facesNote: "Oppure scegli tu con chi parlare.",
     search: "Cerca un tema o una persona", filterAria: "Filtra le call", allCalls: "Tutte le call", teamH2: "Prenota una call con chi preferisci", progsH2: "Tutti i programmi in un posto",
@@ -83,11 +117,12 @@
     prevMonth: "Mese precedente", nextMonth: "Mese successivo", gridAria: "Giorni con orari liberi. Usa le frecce per spostarti.",
     dow: ["lun", "mar", "mer", "gio", "ven", "sab", "dom"], today: ", oggi", freeTimes: "Orari liberi", next: "Avanti",
     cantRead: (who) => `Non riesco a leggere gli orari di ${who}, per ora non li vedi.`,
-    changeTime: "Cambia orario", yourDetails: "I tuoi dati", fullName: "Nome e cognome", email: "Email", org: "Hotel, ente o azienda", role: "Ruolo", optional: "(facoltativo)", website: "Sito",
+    changeTime: "Cambia orario", yourDetails: "I tuoi dati", fullName: "Nome e cognome", email: "Email", org: "Hotel, ente o azienda", role: "Ruolo", optional: "(facoltativo)", website: "Sito", leaveEmpty: "Lascia vuoto questo campo",
     confirm: "Conferma la prenotazione", confirming: "Confermo la prenotazione",
     fine: (u) => `I dati servono a organizzare questa call e sono trattati secondo la <a href="${u}" target="_blank" rel="noopener">privacy di RankWit</a>.`,
     vName: "Scrivi nome e cognome.", vEmail: "Scrivi la tua email.", vEmailBad: "Questa email non è completa, deve essere come nome@hotel.it.",
     vOrg: "Scrivi il nome dell'hotel, dell'ente o dell'azienda.", vNotes: "Scrivi in una o due righe di cosa vuoi parlare.",
+    prefillNotes: (site) => `Vedere insieme il report di ${site}.`,
     taken: "Questo orario non è più libero. Scegline un altro, i tuoi dati restano salvati.", failed: (c) => `Non sono riuscito a confermare la prenotazione. Riprova tra poco o scrivici a ${c}.`,
     confirmed: "Prenotazione confermata", seeYouStand: "Ci vediamo allo stand", talkSoon: "Ci sentiamo presto",
     inviteVenue: (e) => `L'invito con il luogo è in arrivo a <strong>${e}</strong>.`,
@@ -97,10 +132,10 @@
     demoNote: (who) => `È una prova. ${who} non ha ancora collegato cal.com, quindi nessuna prenotazione è stata creata.`, theHost: "Chi farà la call",
     shareColleague: "Vuoi che venga anche un collega? Mandagli giorno, ora e link della call.", shareBtn: "Condividi con un collega", icsBtn: "Scarica per il calendario", backAll: "Torna a tutte le call",
     callWithOf: (n, o) => `Call con ${n} di ${o}`, meetInInvite: "Il link Google Meet è nell'invito di cal.com, che puoi inoltrare.",
-    personTitle: (n) => `Prenota una call con ${n} · RankWit Meet`, personPrompt: "Di cosa vuoi parlare?",
+    personTitle: (n) => `Prenota una call con ${n} | RankWit`, personPrompt: "Di cosa vuoi parlare?",
     personPrepare: "Se vuoi, rispondi all'invito con il sito o i materiali da guardare insieme.",
     personLead: "Ci sentiamo su Google Meet, nel giorno e all'ora che preferisci.",
-    nfTitle: "Pagina non trovata · RankWit Meet", nfH1: "Questo link non è valido", nfLead: "Il link potrebbe essere incompleto. Da qui puoi scegliere il tema o la persona.", nfBtn: "Vedi tutte le call",
+    nfTitle: "Pagina non trovata | RankWit", nfH1: "Questo link non è valido", nfLead: "Il link potrebbe essere incompleto. Da qui puoi scegliere il tema o la persona.", nfBtn: "Vedi tutte le call",
   };
 
   /* ---------- utilità ---------- */
@@ -486,7 +521,7 @@
     </a>`;
 
   function renderGeneric() {
-    document.title = `${G.title} · RankWit Meet`;
+    document.title = `${G.title} | RankWit`;
     renderBooking({
       brand: { short: "RankWit" }, title: G.book, name: G.title, lead: G.summary,
       people: G.people, durations: [G.duration], prepare: G.prepare,
@@ -595,7 +630,7 @@
 
   function renderBrand(b) {
     if (b.types.length === 1) { history.replaceState(null, "", href(`/${b.key}/${b.types[0].key}`)); return route(); }
-    document.title = `${b.name} · RankWit Meet`;
+    document.title = `${b.name} | RankWit`;
     shell(`
       <section class="hero wrap">
         <h1 class="title">${T.bookACall}</h1>
@@ -619,7 +654,7 @@
     // spec: { brand, title, name, lead, people, durations, duration, slugOf, topic,
     //         prompt, prepare, dates, inPerson, place, placeName, timeZone, hero,
     //         headMeta, assign (chi prende l'orario), personal (pagina di una persona) }
-    const st = { duration: spec.duration || spec.durations[0], step: "pick", day: null, slot: null, host: null, month: null, data: null, err: "", values: {} };
+    const st = { duration: spec.duration || spec.durations[0], step: "pick", day: null, slot: null, host: null, month: null, data: null, err: "", values: prefillValues() };
     const tz = () => spec.timeZone || userTz;
     const zoneText = (d) => (spec.timeZone ? T.tzFair : tzLabel(tz(), d));
 
@@ -920,7 +955,7 @@
           </div>
           <div class="field"><label for="f-notes">${esc(spec.prompt)}</label><textarea id="f-notes" name="notes" required>${v("notes")}</textarea></div>
           <label class="check"><input type="checkbox" name="newsletter"${values.newsletter ? " checked" : ""}><span>${esc(C.site.newsletterLabel)}</span></label>
-          <div class="hp" aria-hidden="true"><label>${T.website}<input name="website" tabindex="-1" autocomplete="off"></label></div>
+          <div class="hp" hidden aria-hidden="true"><label>${T.leaveEmpty}<input name="extra_field" tabindex="-1" autocomplete="off"></label></div>
           ${st.err ? `<p class="form-err" role="alert">${esc(st.err)}</p>` : ""}
           <div class="actions">
             <button class="btn" type="submit">${T.confirm}</button>
@@ -982,7 +1017,7 @@
 
       try {
         // campo trappola per i bot: se è pieno fingiamo che sia andata
-        const res = data.website ? { demo: true } : await createBooking({ host: st.host, slug, iso: st.slot, tz: tz(), name: data.name.trim(), email, notes, metadata });
+        const res = data.extra_field ? { demo: true } : await createBooking({ host: st.host, slug, iso: st.slot, tz: tz(), name: data.name.trim(), email, notes, metadata });
         st.err = "";
         drawDone(data, res);
       } catch (err) {
@@ -1087,7 +1122,7 @@
   };
 
   function renderType(b, t) {
-    document.title = `${t.title} · RankWit Meet`;
+    document.title = `${t.title} | RankWit`;
     renderBooking({
       brand: b, title: t.book, name: t.title, lead: t.summary,
       people: t.people, durations: [t.duration], prepare: t.prepare,
@@ -1135,7 +1170,10 @@
   function route() {
     booker = null;
     if (location.hash === "#dati") history.replaceState(null, "", `${location.pathname}${location.search}`);
-    const parts = decodeURIComponent(routePath()).replace(/\/+$/, "").split("/").filter(Boolean).map((s) => s.toLowerCase());
+    // Un indirizzo malformato (per esempio /%E0%A4%A) non deve lasciare la pagina bianca.
+    let decoded;
+    try { decoded = decodeURIComponent(routePath()); } catch (e) { current = "/"; return renderNotFound(); }
+    const parts = decoded.replace(/\/+$/, "").split("/").filter(Boolean).map((s) => s.toLowerCase());
     if (parts[0] === "en") parts.shift(); // la lingua è già stata letta al caricamento
     if (parts[parts.length - 1] === "index.html") parts.pop();
     current = `/${parts.join("/")}`;

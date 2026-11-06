@@ -31,48 +31,48 @@ window.RW_BOOK = {
 
   // weight: quante volte in più tocca a questa persona quando più persone sono
   // libere nello stesso orario (1 = come gli altri, 2 = il doppio).
-  // photo: foto piccola quadrata; portrait: foto verticale per la pagina personale.
+  // photo: foto piccola (320 px, per liste e home); portrait: foto grande per la pagina personale e le schede del team.
   people: {
     dario: {
       name: "Dario", role: "CEO e co-founder", weight: 1,
       bio: "Per gli aspetti tecnici della piattaforma.",
       role_en: "CEO and co-founder", bio_en: "For the technical side of the platform.",
-      photo: "assets/team/dario.webp", portrait: "",
+      photo: "assets/team/dario-320.webp", portrait: "assets/team/dario.webp",
       cal: "dario-valastro", events: { 15: "15min", 30: "30min", 45: "45-min-meeting", 60: "60-min-meeting" },
     },
     davide: {
       name: "Davide", role: "COO e co-founder", weight: 2,
       bio: "Per il primo contatto, le demo e i primi passi.",
       role_en: "COO and co-founder", bio_en: "For a first contact, demos and the first steps.",
-      photo: "assets/team/davide.webp", portrait: "",
+      photo: "assets/team/davide-320.webp", portrait: "assets/team/davide.webp",
       cal: "davide-filiaggi", events: { 15: "15min", 30: "30min" },
     },
     gherardo: {
       name: "Gherardo", role: "CMO", weight: 1,
       bio: "Per marketing e partnership.",
       role_en: "CMO", bio_en: "For marketing and partnerships.",
-      photo: "assets/team/gherardo.webp", portrait: "",
+      photo: "assets/team/gherardo-320.webp", portrait: "assets/team/gherardo.webp",
       cal: "gherardo-fagioli-xox0se", events: { 30: "30min" },
     },
     marco: {
       name: "Marco", role: "Head of Growth", weight: 1,
       bio: "Per sales e scalabilità.",
       role_en: "Head of Growth", bio_en: "For sales and scaling.",
-      photo: "assets/team/marco.webp", portrait: "",
+      photo: "assets/team/marco-320.webp", portrait: "assets/team/marco.webp",
       cal: "marco-amodio-rzvm9e", events: { 15: "15min", 30: "30min" },
     },
     marta: {
       name: "Marta", role: "Business Development", weight: 1,
       bio: "Per demo e presentazioni della piattaforma.",
       role_en: "Business Development", bio_en: "For demos and presentations of the platform.",
-      photo: "assets/team/marta.webp", portrait: "",
+      photo: "assets/team/marta-320.webp", portrait: "assets/team/marta.webp",
       cal: "marta-bausani-8awkz2", events: { 15: "15min", 30: "30min" },
     },
     elvio: {
       name: "Elvio", role: "SEO Specialist", weight: 1,
       bio: "Per la SEO e il sito.",
       role_en: "SEO Specialist", bio_en: "For SEO and the website.",
-      photo: "assets/team/elvio-viso.webp", portrait: "assets/team/elvio.webp",
+      photo: "assets/team/elvio-viso-320.webp", portrait: "assets/team/elvio.webp",
       cal: "elvio-leonardi-avr1vq", events: { 15: "15min", 30: "30min" },
     },
   },

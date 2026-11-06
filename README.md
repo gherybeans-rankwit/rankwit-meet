@@ -51,14 +51,15 @@ Le ferie vanno messe sul calendario come «Fuori sede» o come evento «Occupato
 
 Ogni prenotazione porta con sé, nei metadati di cal.com, `tema`, `fonte`, `organizzazione`, `ruolo`, `newsletter` (solo se spuntata) e, se il link ha `?da=`, `provenienza`. Nelle note della call ci sono la risposta alla domanda del modulo e l'organizzazione. Per i biglietti da visita il QR punta a `book.rankwit.ai/nome?da=biglietto`, così in Attio si vede quanti contatti arrivano da lì.
 
+Il link può anche precompilare il modulo «I tuoi dati» con `nome` (o `name`), `email`, `azienda`, `ruolo`, `sito` e `nota`: per esempio `book.rankwit.ai/team?email=…&nome=…&sito=hotel.it&da=form-sito`. Senza `azienda` si propone il dominio del sito, senza `nota` una riga sul report del sito. I valori si leggono all'apertura e vengono subito tolti dall'indirizzo, così non restano nella barra né nella cronologia; la persona li vede nel modulo e può cambiarli prima di confermare.
+
 Da verificare con un account gratuito: se i webhook di cal.com (Impostazioni > Developer > Webhooks) sono disponibili, così Make li manda in Attio.
 
 ## Pubblicazione
 
 È una pagina statica: si pubblica la cartella così com'è, dopo aver lanciato `node build-pages.mjs`.
 
-- **Cloudflare Pages o Netlify:** servono le pagine vere e usano `_redirects` per il resto.
-- **GitHub Pages:** serve `marta.html` per `/marta` e `404.html` per gli indirizzi sbagliati.
+- **GitHub Pages, Cloudflare Pages o Netlify:** servono `marta.html` per `/marta` e `404.html` per gli indirizzi sbagliati. Non serve nessun file di redirect: la vecchia regola `/* /index.html 200` in `_redirects` è stata tolta perché trasformava ogni indirizzo sbagliato in una home con codice 200.
 
 ## Motori di ricerca e assistenti AI
 
@@ -118,3 +119,15 @@ Le fiere si aggiungono una alla volta in `config.js`, quando sono confermate. Fi
 3. In `navigator` si aggiunge `{ key: "eventi", label: "Fiere ed eventi", options: [["ttg-2027", "incontro"]] }`, in cima se la fiera deve comparire per prima.
 
 Finita la fiera si toglie il blocco: il suo indirizzo smette di funzionare e nella pagina non resta nessun link.
+
+## 5 novembre 2026, versione (21)
+
+Correzioni dall'audit del sito:
+
+- Tolto `_redirects`: le pagine statiche e `404.html` bastano su GitHub Pages, Cloudflare Pages e Netlify.
+- Titoli delle pagine senza punto mediano e con un solo nome: `Prenota una call | RankWit`, `Book a call with Davide | RankWit`, `Pagina non trovata | RankWit`. Vale per `<title>`, `og:title` e `document.title`; le etichette visibili dei programmi restano come sono.
+- Un indirizzo malformato (per esempio `/%E0%A4%A`) mostra la pagina «Questo link non è valido» invece di una pagina bianca.
+- Immagine social per tutte le pagine: `assets/brand/og-it.png` e `og-en.png` (1200 × 630) per home, call e programmi; la foto della persona sulle pagine personali. Con `og:image:width`, `og:image:height` e `twitter:card` `summary_large_image`.
+- Foto del team: versione a 320 px (`assets/team/nome-320.webp`) per la home e le liste, in `photo`; l'originale resta in `portrait` per la pagina personale e le schede del team.
+
+Aggiunta dello stesso giorno, dopo il secondo audit: l'immagine social è sempre il PNG 1200×630 della lingua, anche nelle pagine personali (le foto WebP non vengono lette da tutte le anteprime); il campo trappola del modulo si chiama `extra_field`, ha un'etichetta neutra ed è nascosto con `hidden`, così la compilazione automatica del browser non lo riempie.

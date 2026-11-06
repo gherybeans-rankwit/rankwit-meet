@@ -235,6 +235,7 @@ img { display: block; }
 .check { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; color: var(--ink-soft); cursor: pointer; }
 .check input { margin-top: 3px; accent-color: var(--ink); }
 .hp { position: absolute; left: -9999px; }
+.hp[hidden] { display: none; }
 .fine { font-size: 13px; color: var(--ink-muted); margin: 0; }
 .fine a { color: inherit; }
 .form-err { background: var(--error-soft); color: var(--error); border-radius: var(--radius-ctl); padding: 12px 14px; font-size: 14px; margin: 0 0 16px; }

@@ -131,3 +131,7 @@ Correzioni dall'audit del sito:
 - Foto del team: versione a 320 px (`assets/team/nome-320.webp`) per la home e le liste, in `photo`; l'originale resta in `portrait` per la pagina personale e le schede del team.
 
 Aggiunta dello stesso giorno, dopo il secondo audit: l'immagine social è sempre il PNG 1200×630 della lingua, anche nelle pagine personali (le foto WebP non vengono lette da tutte le anteprime); il campo trappola del modulo si chiama `extra_field`, ha un'etichetta neutra ed è nascosto con `hidden`, così la compilazione automatica del browser non lo riempie.
+
+## 12 novembre 2026, versione (23)
+
+La riga di Marco (Head of Growth) è «Per processi e scalabilità.», in inglese «For processes and scaling.» (era «Per sales e scalabilità.» / «For sales and scaling.»): l'ha chiesta lui, perché parli del suo ruolo. Cambia in `config.js` (`people.marco.bio` e `bio_en`) e, dopo `node build-pages.mjs`, nelle pagine che la mostrano. Chi cerca «sales» nella pagina non trova più Marco, perché la ricerca legge nome, ruolo e riga.

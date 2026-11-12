@@ -56,8 +56,8 @@ window.RW_BOOK = {
     },
     marco: {
       name: "Marco", role: "Head of Growth", weight: 1,
-      bio: "Per sales e scalabilità.",
-      role_en: "Head of Growth", bio_en: "For sales and scaling.",
+      bio: "Per processi e scalabilità.",
+      role_en: "Head of Growth", bio_en: "For processes and scaling.",
       photo: "assets/team/marco-320.webp", portrait: "assets/team/marco.webp",
       cal: "marco-amodio-rzvm9e", events: { 15: "15min", 30: "30min" },
     },

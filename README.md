@@ -147,3 +147,4 @@ La riga di Marco (Head of Growth) è «Per processi e scalabilità.», in ingles
   Quando i testi cambiano sul sito si rilanciano i due comandi. La cookie policy elenca i siti a cui si applica e non nomina ancora la booking page: va aggiornata da chi cura i testi legali.
 - Il footer ha ora Scrivici, Privacy, Termini, Cookie e rankwit.ai. La riga sulla privacy nel modulo di prenotazione porta alla pagina interna.
 
+Dal 13 novembre 2026 (book (25)) `contactEndpoint` punta al webhook Make «book.rankwit.ai - form Scrivici»: lo scenario «book.rankwit.ai - form Scrivici → info@ + Attio» inoltra il messaggio a info@rankwit.ai e aggiunge la persona in Attio solo se non c'è già. Se lo scenario viene spento i messaggi restano in coda su Make: in quel caso svuotare il campo, così il modulo torna ad aprire la posta.

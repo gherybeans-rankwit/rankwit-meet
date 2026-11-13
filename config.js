@@ -22,7 +22,8 @@ window.RW_BOOK = {
     // Dove arriva il modulo «Scrivici» (/scrivici): l'indirizzo di un webhook che
     // riceve JSON (per esempio di Make). Finché è vuoto, il modulo apre la posta
     // di chi scrive con il messaggio già pronto per `contact`.
-    contactEndpoint: "",
+    // Dal 13 novembre 2026: webhook Make «book.rankwit.ai - form Scrivici» (scenario 10156919).
+    contactEndpoint: "https://hook.eu2.make.com/9inpj22xurguojt2ecwruexf77m2gk7i",
   },
 
   rules: {

@@ -48,6 +48,11 @@ const TEXT = {
     personDesc: (p, org) => `${p.bio} Prenota una call con ${p.name}, ${p.role} di ${org}, su Google Meet.`,
     personH1: (p) => `Prenota una call con ${p.name}`,
     personLead: (p) => `${p.bio} Ci sentiamo su Google Meet, nel giorno e all'ora che preferisci.`,
+    contactTitle: "Scrivici | RankWit", contactH1: "Scrivici un messaggio",
+    contactLead: (c) => `Se preferisci non fissare una call, scrivici qui o a ${c}. Ti rispondiamo per email.`,
+    footWrite: "Scrivici",
+    legal: { privacy: "Privacy policy", termini: "Termini e condizioni", cookie: "Cookie policy" },
+    legalDesc: { privacy: "Come RankWit tratta i dati personali: quali raccoglie, perché, con chi li condivide e quali diritti hai.", termini: "I termini e le condizioni d'uso della piattaforma e dei servizi RankWit.", cookie: "Quali cookie e tecnologie simili usano i siti RankWit, a cosa servono e come gestirli." },
   },
   en: {
     prefix: "/en", locale: "en_US",
@@ -63,6 +68,11 @@ const TEXT = {
     personDesc: (p, org) => `${p.bio} Book a call with ${p.name}, ${p.role} at ${org}, on Google Meet.`,
     personH1: (p) => `Book a call with ${p.name}`,
     personLead: (p) => `${p.bio} We meet on Google Meet, on the day and at the time you prefer.`,
+    contactTitle: "Write to us | RankWit", contactH1: "Send us a message",
+    contactLead: (c) => `If you would rather not book a call, write to us here or at ${c}. We reply by email.`,
+    footWrite: "Write to us",
+    legal: { privacy: "Privacy policy", termini: "Terms and conditions", cookie: "Cookie policy" },
+    legalDesc: { privacy: "How RankWit handles personal data: what it collects, why, who it shares it with and what rights you have.", termini: "The terms and conditions of use of the RankWit platform and services.", cookie: "Which cookies and similar technologies the RankWit websites use, what they do and how to manage them." },
   },
 };
 
@@ -76,6 +86,7 @@ const missing = [
 if (missing.length) console.warn(`ATTENZIONE, queste call non hanno nessuno prenotabile:\n- ${missing.join("\n- ")}`);
 
 const pages = [];
+const LEGAL = ["privacy", "termini", "cookie"];
 const written = [];
 const write = (rel, html) => {
   const f = path.join(ROOT, rel);
@@ -101,6 +112,8 @@ for (const lang of ["it", "en"]) {
           <li><a href="${abs(`/${G.key}`)}">${esc(G.title)}</a></li>
           ${calls.map(({ b, t }) => `<li><a href="${abs(`/${b.key}/${t.key}`)}">${esc(t.title)}</a></li>`).join("\n          ")}
           ${people.map(([id, p]) => `<li><a href="${abs(`/${id}`)}">${W.callWith} ${esc(p.name)}, ${esc(p.role)}</a></li>`).join("\n          ")}
+          <li><a href="${abs("/scrivici")}">${W.footWrite}</a></li>
+          ${LEGAL.map((k) => `<li><a href="${abs(`/${k}`)}">${W.legal[k]}</a></li>`).join("\n          ")}
         </ul>
       </nav>`;
 
@@ -108,7 +121,7 @@ for (const lang of ["it", "en"]) {
     <main>
       <section class="hero wrap">
         <h1 class="title">${esc(h1)}</h1>
-        <p class="lead">${esc(lead)}</p>${extra}
+        ${lead ? `<p class="lead">${esc(lead)}</p>` : ""}${extra}
       </section>${allLinks()}
     </main>
   `;
@@ -129,6 +142,13 @@ for (const lang of ["it", "en"]) {
     for (const t of b.types) {
       add(`/${b.key}/${t.key}`, { title: `${t.title} | RankWit`, desc: t.summary, h1: t.book || t.title, lead: W.typeLead(t) });
     }
+  }
+
+  add("/scrivici", { title: W.contactTitle, desc: W.contactLead(C.site.contact), h1: W.contactH1, lead: W.contactLead(C.site.contact) });
+  // Pagine legali: il testo ufficiale è già nel codice della pagina statica.
+  for (const k of LEGAL) {
+    const text = read(`legal/${lang}/${k}.html`).replace(/href="@@([a-z]+)"/g, (m, key) => `href="${abs(`/${key}`)}"`);
+    add(`/${k}`, { title: `${W.legal[k]} | RankWit`, desc: W.legalDesc[k], h1: W.legal[k], lead: "", extra: `\n        <div class="legal-text">${text}</div>` });
   }
 
   for (const [id, p] of people) {

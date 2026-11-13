@@ -19,6 +19,10 @@ window.RW_BOOK = {
     newsletterLabel: "Voglio ricevere la newsletter di RankWit",
     newsletterLabel_en: "Send me the RankWit newsletter",
     contact: "info@rankwit.ai",
+    // Dove arriva il modulo «Scrivici» (/scrivici): l'indirizzo di un webhook che
+    // riceve JSON (per esempio di Make). Finché è vuoto, il modulo apre la posta
+    // di chi scrive con il messaggio già pronto per `contact`.
+    contactEndpoint: "",
   },
 
   rules: {

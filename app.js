@@ -94,6 +94,17 @@
     personTitle: (n) => `Book a call with ${n} | RankWit`, personPrompt: "What would you like to talk about?",
     personPrepare: "If you like, reply to the invitation with the website or the material to look at together.",
     personLead: "We meet on Google Meet, on the day and at the time you prefer.",
+    contactBtn: "Send us a message", contactTitle: "Write to us | RankWit", contactH1: "Send us a message",
+    contactLead: "If you would rather not book a call, write to us here. We reply by email.",
+    message: "Message", send: "Send the message", sending: "Sending", vMessage: "Write your message.",
+    sentH: "Message sent", sentP: "Thanks. We will reply by email as soon as we can.",
+    mailH: "One more step", mailP: (c) => `Your email app has opened with the message already written: press Send. If it did not open, write to us at <a href="mailto:${c}">${c}</a>.`,
+    contactErr: (c) => `We could not send your message. Please try again, or write to ${c}.`,
+    contactFine: (u) => `We use these details only to reply to you, under <a href="${u}" data-link>RankWit's privacy policy</a>.`,
+    backHome: "See all calls", footWrite: "Write to us", footNav: "Contacts and legal pages",
+    legal: { privacy: "Privacy policy", termini: "Terms and conditions", cookie: "Cookie policy" },
+    legalShort: { privacy: "Privacy", termini: "Terms", cookie: "Cookies" },
+    legalLoading: "Loading the text", legalErr: (u) => `We could not load this page. You can read it on <a href="${u}">rankwit.ai</a>.`,
     nfTitle: "Page not found | RankWit", nfH1: "This link is not valid", nfLead: "The link may be incomplete. From here you can choose a topic or a person.", nfBtn: "See all calls",
   } : {
     tzItaly: "ora italiana", tzCET: "ora dell'Europa centrale", tzCity: (c) => `ora di ${c}`, tzFair: "ora locale della fiera",
@@ -135,6 +146,17 @@
     personTitle: (n) => `Prenota una call con ${n} | RankWit`, personPrompt: "Di cosa vuoi parlare?",
     personPrepare: "Se vuoi, rispondi all'invito con il sito o i materiali da guardare insieme.",
     personLead: "Ci sentiamo su Google Meet, nel giorno e all'ora che preferisci.",
+    contactBtn: "Scrivici un messaggio", contactTitle: "Scrivici | RankWit", contactH1: "Scrivici un messaggio",
+    contactLead: "Se preferisci non fissare una call, scrivici qui. Ti rispondiamo per email.",
+    message: "Messaggio", send: "Invia il messaggio", sending: "Invio in corso", vMessage: "Scrivi il tuo messaggio.",
+    sentH: "Messaggio inviato", sentP: "Grazie. Ti rispondiamo per email appena possibile.",
+    mailH: "Manca un passo", mailP: (c) => `Si è aperta la tua posta con il messaggio già scritto: premi Invia. Se non si è aperta, scrivici a <a href="mailto:${c}">${c}</a>.`,
+    contactErr: (c) => `Non siamo riusciti a inviare il messaggio. Riprova, oppure scrivici a ${c}.`,
+    contactFine: (u) => `I dati servono solo a risponderti e sono trattati secondo la <a href="${u}" data-link>privacy di RankWit</a>.`,
+    backHome: "Vedi tutte le call", footWrite: "Scrivici", footNav: "Contatti e pagine legali",
+    legal: { privacy: "Privacy policy", termini: "Termini e condizioni", cookie: "Cookie policy" },
+    legalShort: { privacy: "Privacy", termini: "Termini", cookie: "Cookie" },
+    legalLoading: "Carico il testo", legalErr: (u) => `Non siamo riusciti a caricare questa pagina. Puoi leggerla su <a href="${u}">rankwit.ai</a>.`,
     nfTitle: "Pagina non trovata | RankWit", nfH1: "Questo link non è valido", nfLead: "Il link potrebbe essere incompleto. Da qui puoi scegliere il tema o la persona.", nfBtn: "Vedi tutte le call",
   };
 
@@ -409,6 +431,8 @@
   const narrow = () => window.matchMedia("(max-width: 900px)").matches;
   let booker = null; // la prenotazione aperta, per gestire Indietro e Avanti del browser
 
+  const LEGAL = ["privacy", "termini", "cookie"];
+
   function shell(main, right = T.bookACall) {
     app.innerHTML = `
       <header class="site-head">
@@ -427,7 +451,11 @@
       <footer class="site-foot">
         <div class="wrap foot-in">
           <span class="foot-brand"><img src="assets/brand/rankwit-ai-black.svg" alt="${esc(C.site.organisation)}" width="104" height="16"></span>
-          <span><a href="${esc(C.site.privacyUrl)}">Privacy</a> · <a href="${esc(C.site.website)}">rankwit.ai</a></span>
+          <nav class="foot-links" aria-label="${T.footNav}">
+            <a href="${href("/scrivici")}" data-link>${T.footWrite}</a>
+            ${LEGAL.map((k) => `<a href="${href(`/${k}`)}" data-link>${T.legalShort[k]}</a>`).join("\n            ")}
+            <a href="${esc(C.site.website)}">rankwit.ai</a>
+          </nav>
         </div>
       </footer>`;
     window.scrollTo(0, 0);
@@ -551,6 +579,7 @@
             <p class="lead">${T.homeLead}</p>
             <div class="hero-action">
               <a class="btn big" href="${href(`/${G.key}`)}" data-link>${T.bookTeam} ${ICON.arrow}</a>
+              <a class="btn ghost" href="${href("/scrivici")}" data-link>${T.contactBtn}</a>
               <p class="hero-facts">${ICON.ok}<span>${G.duration} ${T.minutes}, ${free(false)}</span></p>
             </div>
           </div>
@@ -961,7 +990,7 @@
             <button class="btn" type="submit">${T.confirm}</button>
             <span class="free">${ICON.ok}${st.duration} ${T.minutes}, ${free(spec.inPerson)}</span>
           </div>
-          <p class="fine">${T.fine(esc(C.site.privacyUrl))}</p>
+          <p class="fine">${T.fine(href("/privacy"))}</p>
         </form>`;
       panel.querySelector(".h2").focus({ preventScroll: true });
       if (narrow()) panel.scrollIntoView({ block: "start", behavior: reduceMotion() ? "auto" : "smooth" });
@@ -1158,6 +1187,127 @@
     });
   }
 
+  /* ---------- scrivici ---------- */
+
+  // Il messaggio parte verso `site.contactEndpoint` (un webhook che riceve JSON).
+  // Finché è vuoto, si apre la posta di chi scrive con il messaggio già pronto.
+  function renderContact() {
+    document.title = T.contactTitle;
+    const pre = prefillValues();
+    shell(`
+      <section class="hero wrap contact">
+        <h1 class="title">${T.contactH1}</h1>
+        <p class="lead">${T.contactLead}</p>
+        <div class="contact-body" id="contact">
+          <form class="form" novalidate>
+            <div class="row2">
+              <div class="field"><label for="c-name">${T.fullName}</label><input id="c-name" name="name" autocomplete="name" required value="${esc(pre.name || "")}"></div>
+              <div class="field"><label for="c-email">${T.email}</label><input id="c-email" name="email" type="email" inputmode="email" autocomplete="email" required value="${esc(pre.email || "")}"></div>
+            </div>
+            <div class="field"><label for="c-org">${T.org} <span class="opt">${T.optional}</span></label><input id="c-org" name="organisation" autocomplete="organization" value="${esc(pre.organisation || "")}"></div>
+            <div class="field"><label for="c-msg">${T.message}</label><textarea id="c-msg" name="message" required></textarea></div>
+            <div class="hp" hidden aria-hidden="true"><label>${T.leaveEmpty}<input name="extra_field" tabindex="-1" autocomplete="off"></label></div>
+            <p class="form-err" role="alert" hidden></p>
+            <div class="actions"><button class="btn" type="submit">${T.send}</button></div>
+            <p class="fine">${T.contactFine(href("/privacy"))}</p>
+          </form>
+        </div>
+      </section>`, T.contactH1);
+
+    const form = app.querySelector("#contact form");
+    form.addEventListener("submit", async (ev) => {
+      ev.preventDefault();
+      const data = Object.fromEntries(new FormData(form).entries());
+      const errBox = form.querySelector(".form-err");
+      errBox.hidden = true;
+      form.querySelectorAll(".field").forEach((f) => {
+        f.classList.remove("bad");
+        f.querySelector(".msg")?.remove();
+        f.querySelector("input, textarea")?.removeAttribute("aria-invalid");
+        f.querySelector("input, textarea")?.removeAttribute("aria-describedby");
+      });
+      const bad = [];
+      const mark = (name, msg) => {
+        const input = form.querySelector(`[name="${name}"]`);
+        const f = input.closest(".field");
+        f.classList.add("bad");
+        f.insertAdjacentHTML("beforeend", `<span class="msg" id="${input.id}-msg">${msg}</span>`);
+        input.setAttribute("aria-invalid", "true");
+        input.setAttribute("aria-describedby", `${input.id}-msg`);
+        bad.push(name);
+      };
+      const email = (data.email || "").trim();
+      if (!data.name?.trim()) mark("name", T.vName);
+      if (!email) mark("email", T.vEmail);
+      else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) mark("email", T.vEmailBad);
+      if (!data.message?.trim()) mark("message", T.vMessage);
+      if (bad.length) { form.querySelector(`[name="${bad[0]}"]`).focus(); return; }
+
+      const done = (h, p) => {
+        document.getElementById("contact").innerHTML = `
+          <div class="done">
+            <span class="done-icon">${ICON.ok}</span>
+            <h2 class="h2" tabindex="-1">${h}</h2>
+            <p>${p}</p>
+            <a class="btn" href="${href("/")}" data-link>${T.backHome}</a>
+          </div>`;
+        document.querySelector("#contact .h2").focus({ preventScroll: true });
+      };
+      const name = data.name.trim(), org = (data.organisation || "").trim(), message = data.message.trim();
+      if (data.extra_field) return done(T.sentH, T.sentP); // un robot: nessun invio
+      const endpoint = C.site.contactEndpoint;
+      if (!endpoint) {
+        const subject = EN ? `Message from ${name}` : `Messaggio da ${name}`;
+        const body = `${message}\n\n${name}${org ? `\n${org}` : ""}\n${email}`;
+        location.href = `mailto:${C.site.contact}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        return done(T.mailH, T.mailP(esc(C.site.contact)));
+      }
+      const btn = form.querySelector('button[type="submit"]');
+      btn.disabled = true;
+      btn.innerHTML = `<span class="spin light" aria-hidden="true"></span>${T.sending}`;
+      try {
+        const res = await fetch(endpoint, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            event: "message", submitted_at: new Date().toISOString(), name, email, organisation: org, message,
+            locale: LANG, source: source || "", page_url: location.href.split("?")[0], subdomain_origin: "book.rankwit.ai",
+          }),
+        });
+        if (!res.ok) throw new Error(String(res.status));
+        done(T.sentH, T.sentP);
+      } catch (e) {
+        btn.disabled = false;
+        btn.textContent = T.send;
+        errBox.textContent = T.contactErr(C.site.contact);
+        errBox.hidden = false;
+      }
+    });
+  }
+
+  /* ---------- privacy, termini, cookie ---------- */
+
+  // I testi sono quelli ufficiali di RankWit, in legal/<lingua>/<pagina>.html
+  // (li porta qui import-legal.py). Le pagine statiche li hanno già nel codice.
+  async function renderLegal(key) {
+    document.title = `${T.legal[key]} | RankWit`;
+    shell(`
+      <section class="hero wrap legal">
+        <h1 class="title">${T.legal[key]}</h1>
+        <div class="legal-text" id="legal-text"><p class="legal-wait">${T.legalLoading}</p></div>
+      </section>`, T.legal[key]);
+    const box = document.getElementById("legal-text");
+    try {
+      const res = await fetch(`legal/${LANG}/${key}.html`);
+      if (!res.ok) throw new Error(String(res.status));
+      const html = (await res.text()).replace(/href="@@([a-z]+)"/g, (m, k) => `href="${href(`/${k}`)}" data-link`);
+      if (current !== `/${key}` || !box.isConnected) return;
+      box.innerHTML = html;
+    } catch (e) {
+      if (box.isConnected) box.innerHTML = `<p>${T.legalErr(esc(C.site.privacyUrl))}</p>`;
+    }
+  }
+
   function renderNotFound() {
     document.title = T.nfTitle;
     shell(`<section class="hero wrap"><h1 class="title">${T.nfH1}</h1>
@@ -1181,6 +1331,8 @@
     const [a, b] = parts;
     if (parts.length === 1 && C.people[a]) return renderPerson(a);
     if (parts.length === 1 && a === G.key) return renderGeneric();
+    if (parts.length === 1 && a === "scrivici") return renderContact();
+    if (parts.length === 1 && LEGAL.includes(a)) return renderLegal(a);
     const br = brand(a);
     if (br && parts.length === 1) return renderBrand(br);
     if (br && parts.length === 2) { const t = typeOf(a, b); if (t) return renderType(br, t); }

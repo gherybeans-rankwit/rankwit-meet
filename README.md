@@ -135,3 +135,15 @@ Aggiunta dello stesso giorno, dopo il secondo audit: l'immagine social è sempre
 ## 12 novembre 2026, versione (23)
 
 La riga di Marco (Head of Growth) è «Per processi e scalabilità.», in inglese «For processes and scaling.» (era «Per sales e scalabilità.» / «For sales and scaling.»): l'ha chiesta lui, perché parli del suo ruolo. Cambia in `config.js` (`people.marco.bio` e `bio_en`) e, dopo `node build-pages.mjs`, nelle pagine che la mostrano. Chi cerca «sales» nella pagina non trova più Marco, perché la ricerca legge nome, ruolo e riga.
+
+## Scrivici e pagine legali (book (24), 13 novembre 2026)
+
+- `/scrivici` (e `/en/scrivici`): modulo per mandare un messaggio senza fissare una call. C'è un tasto nella home, sotto «Prenota una call con il team», e un link nel footer. Il messaggio parte in JSON verso `site.contactEndpoint` in `config.js` (un webhook, per esempio di Make). Finché quel campo è vuoto, il modulo apre la posta di chi scrive con il messaggio già pronto per `site.contact`.
+- `/privacy`, `/termini`, `/cookie` (anche sotto `/en/`): i testi ufficiali di RankWit, parola per parola. Stanno in `legal/<lingua>/` e li porta qui `import-legal.py` dalle pagine legali del sito:
+
+      python3 import-legal.py "../../Website (4)/webflow"
+      node build-pages.mjs
+
+  Quando i testi cambiano sul sito si rilanciano i due comandi. La cookie policy elenca i siti a cui si applica e non nomina ancora la booking page: va aggiornata da chi cura i testi legali.
+- Il footer ha ora Scrivici, Privacy, Termini, Cookie e rankwit.ai. La riga sulla privacy nel modulo di prenotazione porta alla pagina interna.
+

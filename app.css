@@ -510,3 +510,21 @@ img { display: block; }
   .share-btn { min-height: 44px; }
   .done-share-btns .btn { flex: 1 1 100%; }
 }
+
+/* Scrivici e pagine legali */
+.hero-action .btn.ghost { padding: 13px 20px; }
+.foot-links { display: flex; flex-wrap: wrap; gap: 6px 18px; }
+.contact .lead { margin-bottom: 32px; }
+.contact-body { max-width: 620px; }
+.legal { padding-bottom: 72px; }
+.legal-text { max-width: 46em; color: var(--ink-soft); font-size: 16px; line-height: 1.65; overflow-wrap: break-word; }
+.legal-text h2 { font: 700 22px/1.25 var(--font-head); color: var(--ink); margin: 40px 0 12px; }
+.legal-text h3, .legal-text h4 { font: 600 17px/1.35 var(--font-body); color: var(--ink); margin: 28px 0 8px; }
+.legal-text p { margin: 0 0 14px; }
+.legal-text ul, .legal-text ol { margin: 0 0 14px; padding-left: 22px; }
+.legal-text li { margin-bottom: 6px; }
+.legal-text a { color: var(--accent-text); }
+.legal-text strong { color: var(--ink); font-weight: 600; }
+.legal-text table { border-collapse: collapse; width: 100%; margin: 0 0 16px; font-size: 14.5px; }
+.legal-text th, .legal-text td { border: 1px solid var(--hair-strong); padding: 8px 10px; text-align: left; vertical-align: top; }
+.legal-wait { color: var(--ink-muted); }
